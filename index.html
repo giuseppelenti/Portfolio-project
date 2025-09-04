@@ -265,14 +265,14 @@
                             <ul class="resume-list timeline">
                                 <li class="resume-item reveal">
                                     <div class="resume-item-header">
-                                        <span class="resume-role"><i class="fa-solid fa-briefcase"></i> UX/UI Designer</span>
+                                        <span class="resume-role"><i class="fa-solid fa-briefcase"></i>Software Tester</span>
                                         <span class="resume-meta">
-                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> 2022 — Oggi</span>
-                                            <span class="resume-meta-chip"><i class="fa-solid fa-user"></i> Freelance</span>
-                                            <span class="resume-meta-chip"><i class="fa-solid fa-location-dot"></i> Remote</span>
+                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> 2018 - 2019</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-user"></i>Panasonic Automotive</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-location-dot"></i>Monaco di Baviera - Stoccarda</span>
                                         </span>
                                     </div>
-                                    <p class="resume-desc">Progettazione e prototipazione di interfacce, design system, test con utenti, landing e siti vetrina.</p>
+                                    <p class="resume-desc">Testing Hardware e Software Automotive, creazione documentazione errori, montaggio HIL Box e report con Jira.</p>
                                 </li>
                                 <li class="resume-item reveal">
                                     <div class="resume-item-header">
@@ -353,7 +353,7 @@
         <button class="project-detail-close" aria-label="Close project detail">×</button>
         <div class="project-detail-header">
             <h2 class="project-detail-title"></h2>
-            <p class="project-detail-subtitle">Scorri orizzontalmente per i dettagli</p>
+            <p class="project-detail-subtitle">Scorri verticalmente per i dettagli</p>
         </div>
         <div class="project-detail-scroller" aria-label="Project detail scroller" role="region">
             <!-- Split fullscreen slides: Left (copy), Right (image) -->
@@ -454,7 +454,7 @@
     position: fixed;
     top: 24px;
     right: 24px;
-    z-index: 99999;
+    z-index: 1000001;
     width: 48px;
     height: 48px;
     border: none;
@@ -516,8 +516,8 @@
 </section>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Loader
-    document.body.classList.add('loading');
+    // Loader: ensure site is always interactive
+    document.body.classList.remove('loading');
     const loadingCursor = document.getElementById('loading-cursor');
     document.addEventListener('mousemove', function(e) {
         if(document.body.classList.contains('loading')) {
@@ -529,20 +529,17 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             document.getElementById('loader').classList.add('loader-bottom');
             document.body.classList.remove('loading');
-        }, 2200);
+        }, 400);
     });
 
-    // Safety fallback: if for any reason 'load' didn't fire or classes weren't toggled,
-    // force-disable loading after a few seconds to restore pointer/scroll.
+    // Safety fallback: ensure loading state is cleared quickly regardless
     setTimeout(function() {
         const loader = document.getElementById('loader');
-        if (document.body.classList.contains('loading')) {
-            document.body.classList.remove('loading');
-        }
+        document.body.classList.remove('loading');
         if (loader && !loader.classList.contains('loader-bottom')) {
             loader.classList.add('loader-bottom');
         }
-    }, 5000);
+    }, 800);
 
     // Navbar animazione lettere
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -575,15 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Hamburger menu toggle
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
-    const mainNav = document.getElementById('mainNav');
-    if (hamburgerMenu && mainNav) {
-        hamburgerMenu.addEventListener('click', () => {
-            hamburgerMenu.classList.toggle('open');
-            mainNav.classList.toggle('open');
-        });
-    }
+    // Hamburger menu handled in script.js (avoid duplicate listeners here)
 
     // Animazione digitazione su first-name e last-name
     function typeWriter(element, text, speed = 80) {

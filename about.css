@@ -72,6 +72,11 @@ body.dark-mode .timeline.timeline--right .resume-item::before {
   .timeline.timeline--right { padding-right: 22px; }
   .timeline.timeline--right::before { right: 8px; }
   .timeline.timeline--right .resume-item::before { right: -18px; }
+  /* Ensure titles are left-aligned on small screens */
+  .resume-experience .resume-title,
+  .info-right .resume-education .resume-title {
+    text-align: left;
+  }
 }
 
 /* =========================================================
@@ -99,8 +104,8 @@ body.dark-mode .timeline.timeline--right .resume-item::before {
 .info-right .resume-education .resume-title { padding-right: 44px; }
 /* Mobile: timeline padding reduces to 22px, so titles need 22 + 16 = 38px */
 @media (max-width: 576px) {
-  .resume-experience .resume-title { padding-left: 38px; }
-  .info-right .resume-education .resume-title { padding-right: 38px; }
+  .resume-experience .resume-title { padding-left: 0; }
+  .info-right .resume-education .resume-title { padding-left: 0; padding-right: 0; }
 }
 .resume-item { margin: 16px 0; padding: 12px 16px; background: transparent; border-radius: 8px; }
 
@@ -144,12 +149,49 @@ body.dark-mode .resume-meta-chip { border-color: rgba(255,255,255,0.22); backgro
   .resume-item-header { flex-direction: column; align-items: flex-start; gap: 4px; }
 }
 
+/* Force left alignment for both Experience and Education on small screens */
+@media (max-width: 576px) {
+  /* Make right-side timeline behave like left-side timeline */
+  .info-right .timeline.timeline--right {
+    padding-right: 0;
+    padding-left: 22px;
+  }
+  .info-right .timeline.timeline--right::before {
+    right: auto;
+    left: 8px;
+  }
+  .info-right .timeline.timeline--right .resume-item {
+    text-align: left;
+  }
+  .info-right .timeline.timeline--right .resume-item::before {
+    right: auto;
+    left: -18px;
+  }
+
+  /* Switch Education items to left accent/border and padding */
+  .info-right .resume-education .resume-item {
+    border-right: none;
+    border-left: 3px solid #1a1a1a;
+    padding-right: 0;
+    padding-left: 16px;
+  }
+  /* Title padding on left for both sections */
+  .info-right .resume-education .resume-title {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* Dark mode: ensure left border is visible */
+  body.dark-mode .info-right .resume-education .resume-item {
+    border-left-color: #ffffff;
+  }
+}
 /* Spacing between stacked blocks */
 .intro-column + .info-separator { margin-top: 10px; }
 .resume-block + .resume-block { margin-top: 16px; }
 
 /* Right column alignment for meta chips */
-@media (min-width: 992px) {
+  @media (min-width: 992px) {
   /* Make row stretch columns to equal height */
   .info-section > .container-fluid > .row { align-items: stretch; }
   .info-section > .container-fluid > .row > .col-12.col-lg-6 { display: flex; flex-direction: column; }
@@ -700,12 +742,15 @@ body.dark-mode .about-section::before {
     display: flex;
     height: 100%;
     transition: none; /* JS drives transform per frame for smooth infinite loop */
+    gap: 0 !important; /* ensure no spacing between slides */
 }
 
 .carousel-slide {
     min-width: 100%;
     height: 100%;
     box-sizing: border-box;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .carousel-slide img {
@@ -713,7 +758,14 @@ body.dark-mode .about-section::before {
     height: 100%;
     display: block;
     object-fit: cover; /* fill the slide area */
+    border-radius: 0 !important; /* remove any rounded corners on images */
 }
+
+/* Hard override: ensure no rounded corners anywhere in About carousel */
+.about-section .carousel-container,
+.about-section .carousel-track,
+.about-section .carousel-slide,
+.about-section .carousel-slide img { border-radius: 0 !important; }
 
 .carousel-prev,
 .carousel-next {
@@ -992,6 +1044,11 @@ body.dark-mode .about-half-light {
     box-sizing: border-box;
 }
 
+/* Allow vertical page scroll by default; JS will preventDefault during horizontal drag */
+.about-section .carousel-container {
+    touch-action: pan-y;
+}
+
 /* Enforce full-height images and prevent intrinsic size from pushing container */
 .about-section .carousel-track { align-items: stretch; }
 .about-section .carousel-slide img {
@@ -1066,6 +1123,46 @@ body.dark-mode .about-half-light {
     height: auto !important;
     min-height: 0 !important;
 }
+
+/* Reduce overall section height on desktop */
+@media (min-width: 992px) {
+    .about-section {
+      min-height: 100vh !important;
+      height: 100vh !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+    }
+    .about-section .container-fluid {
+      min-height: 100vh !important;
+      height: 100vh !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .about-section .row {
+      min-height: 100vh !important;
+      height: 100vh !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      align-items: stretch !important;
+    }
+    .about-section .row > [class^="col-"],
+    .about-section .row > [class*=" col-"] { height: 100% !important; display: flex !important; }
+    .about-section .about-content { height: 100% !important; display: flex !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+    .about-section .carousel-container {
+      height: 100% !important;   /* match about-section height */
+      min-height: 100% !important;
+      flex: 1 1 auto !important;
+    }
+    .about-section .carousel-track,
+    .about-section .carousel-slide { height: 100% !important; }
+    .about-section .carousel-slide img { height: 100% !important; width: 100% !important; object-fit: cover !important; display: block !important; }
+    /* Reduce vertical padding on left text column */
+    .about-section .col-12.col-lg-6.order-1.order-lg-1 {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+  }
 
 .about-image {
     background-attachment: scroll; /* disable background parallax */
@@ -1542,7 +1639,7 @@ body.dark-mode .main-nav {
     height: 2px;
     margin: 4px 0;
     background: var(--bar-color); /* follow global adaptive color */
-    border: 1.5px solid var(--bar-stroke);
+    border: 1px;
     border-radius: 2px;
     transition: all 0.3s;
 }
@@ -1581,17 +1678,19 @@ body.dark-mode .main-nav {
     }
 }
 
-/* ===== Final overrides to guarantee carousel fills the entire section height ===== */
-.about-section { min-height: 100vh !important; padding-top: 0 !important; padding-bottom: 0 !important; }
-.about-section .container-fluid { height: 100% !important; min-height: 100vh !important; }
-.about-section .row { min-height: 100vh !important; height: 100% !important; padding-top: 0 !important; padding-bottom: 0 !important; align-items: stretch !important; }
-.about-section .row > [class^="col-"],
-.about-section .row > [class*=" col-"] { height: 100% !important; display: flex !important; }
-.about-section .about-content { height: 100% !important; display: flex !important; padding-top: 0 !important; padding-bottom: 0 !important; }
-.about-section .carousel-container { height: 100% !important; min-height: 100% !important; flex: 1 1 auto !important; }
-.about-section .carousel-track,
-.about-section .carousel-slide { height: 100% !important; }
-.about-section .carousel-slide img { height: 100% !important; width: 100% !important; object-fit: cover !important; display: block !important; }
+/* ===== Final overrides for small screens: carousel fills the entire section height ===== */
+@media (max-width: 991.98px) {
+  .about-section { min-height: 100vh !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  .about-section .container-fluid { height: 100% !important; min-height: 100vh !important; }
+  .about-section .row { min-height: 100vh !important; height: 100% !important; padding-top: 0 !important; padding-bottom: 0 !important; align-items: stretch !important; }
+  .about-section .row > [class^="col-"],
+  .about-section .row > [class*=" col-"] { height: 100% !important; display: flex !important; }
+  .about-section .about-content { height: 100% !important; display: flex !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  .about-section .carousel-container { height: 100% !important; min-height: 100% !important; flex: 1 1 auto !important; }
+  .about-section .carousel-track,
+  .about-section .carousel-slide { height: 100% !important; }
+  .about-section .carousel-slide img { height: 100% !important; width: 100% !important; object-fit: cover !important; display: block !important; }
+}
 
 /* ===== Footer CTA (reference style) ===== */
 .footer-cta {

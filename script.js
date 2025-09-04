@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!detail) return;
     const closeBtn = detail.querySelector('.project-detail-close');
     const titleEl = detail.querySelector('.project-detail-title');
-    const scroller = detail.querySelector('.project-detail-scroller');
-    const slides = Array.from(scroller.querySelectorAll('.detail-slide'));
+    let scroller = detail.querySelector('.project-detail-scroller');
+    const getSlides = () => Array.from(scroller.querySelectorAll('.detail-slide'));
 
     // Open overlay for a given topic name
     const openDetail = (topic) => {
@@ -28,14 +28,28 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show modal
         detail.classList.add('open');
         detail.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('modal-open');
+        // Body no longer needs modal-open; overlay manages its own interactions
         // Jump to corresponding slide
-        const idx = slides.findIndex(sl => (sl.getAttribute('data-topic')||'').toLowerCase() === (topic||'').toLowerCase());
-        const target = idx >= 0 ? slides[idx] : slides[0];
+        const slidesNow = getSlides();
+        const idx = slidesNow.findIndex(sl => (sl.getAttribute('data-topic')||'').toLowerCase() === (topic||'').toLowerCase());
+        const target = idx >= 0 ? slidesNow[idx] : slidesNow[0];
         if (target) {
-            target.scrollIntoView({ behavior: 'instant', inline: 'start', block: 'nearest' });
-            // Align exactly
-            scroller.scrollLeft = target.offsetLeft;
+            const cs = window.getComputedStyle(scroller);
+            const isVerticalDetail = cs.overflowX === 'hidden' && cs.overflowY !== 'hidden';
+            if (isVerticalDetail) {
+                // Vertical layout: align slide to top
+                target.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'nearest' });
+                scroller.scrollTop = target.offsetTop;
+                // Ensure the scroller captures wheel/keyboard focus
+                scroller.style.overflowY = 'auto';
+                scroller.style.overflowX = 'hidden';
+                scroller.tabIndex = -1;
+                try { scroller.focus({ preventScroll: true }); } catch(_) {}
+            } else {
+                // Horizontal layout (legacy): align to left
+                target.scrollIntoView({ behavior: 'instant', inline: 'start', block: 'nearest' });
+                scroller.scrollLeft = target.offsetLeft;
+            }
         }
     };
 
@@ -74,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeDetail = () => {
         detail.classList.remove('open');
         detail.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('modal-open');
+        // No modal-open class to remove; keep body free for interactions
     };
 
     // Bind open handlers on project topic blocks
@@ -132,68 +146,43 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (_) { /* no-op */ }
     });
 
-    // Drag-to-scroll for detail scroller
+    // Project detail is vertical-only now: no custom drag/wheel handlers needed.
     if (scroller) {
-        let isDown = false;
-        let startX = 0;
-        let scrollStart = 0;
-        let activePointerId = null;
+        const cs0 = window.getComputedStyle(scroller);
+        const isVerticalDetail = cs0.overflowX === 'hidden' && cs0.overflowY !== 'hidden';
+        if (isVerticalDetail) {
+            const prevScrollTop = scroller.scrollTop;
+            const clone = scroller.cloneNode(true);
+            clone.style.cursor = 'auto';
+            clone.style.touchAction = 'auto';
+            clone.style.userSelect = 'auto';
+            clone.style.overscrollBehavior = 'auto';
+            scroller.parentNode.replaceChild(clone, scroller);
+            scroller = clone;
+            scroller.scrollTop = prevScrollTop;
 
-        const onDown = (clientX) => {
-            isDown = true;
-            scroller.classList.add('dragging');
-            startX = clientX;
-            scrollStart = scroller.scrollLeft;
-        };
-        const onMove = (clientX, e) => {
-            if (!isDown) return;
-            if (e && e.cancelable) e.preventDefault();
-            const dx = clientX - startX;
-            scroller.scrollLeft = scrollStart - dx;
-        };
-        const onUp = () => {
-            if (!isDown) return;
-            isDown = false;
-            scroller.classList.remove('dragging');
-        };
-
-        scroller.addEventListener('pointerdown', (e) => {
-            if (e.button !== 0 && e.pointerType === 'mouse') return;
-            if (e && e.cancelable) e.preventDefault();
-            activePointerId = e.pointerId;
-            scroller.setPointerCapture(activePointerId);
-            onDown(e.clientX);
-        });
-        scroller.addEventListener('pointermove', (e) => {
-            if (activePointerId === null || e.pointerId !== activePointerId) return;
-            onMove(e.clientX, e);
-        });
-        const endPtr = (e) => {
-            if (activePointerId === null || e.pointerId !== activePointerId) return;
-            try { scroller.releasePointerCapture(activePointerId); } catch(_) {}
-            activePointerId = null;
-            onUp();
-        };
-        scroller.addEventListener('pointerup', endPtr);
-        scroller.addEventListener('pointercancel', endPtr);
-        scroller.addEventListener('lostpointercapture', () => { activePointerId = null; onUp(); });
-        scroller.addEventListener('pointerleave', (e) => { if (e.pointerId === activePointerId) { activePointerId = null; onUp(); } });
-        scroller.addEventListener('dragstart', (e) => e.preventDefault());
-
-        // Wheel: map vertical wheel to horizontal scroll for wide slides
-        scroller.addEventListener('wheel', (e) => {
-            // Combine deltas: prefer vertical for typical mouse wheels; trackpads may provide deltaX
-            const horizontalDelta = Math.abs(e.deltaY) >= Math.abs(e.deltaX)
-                ? e.deltaY
-                : e.deltaX;
-
-            // Apply a mild factor for smoother feel across devices
-            const factor = e.shiftKey ? 1.0 : 1.0; // keep 1:1; adjust if needed
-            scroller.scrollLeft += horizontalDelta * factor;
-
-            // Prevent page from attempting to scroll vertically while inside overlay
-            if (e.cancelable) e.preventDefault();
-        }, { passive: false });
+            // Fallback: forward wheel/touch from overlay to scroller to guarantee vertical scroll
+            const forwardWheel = (e) => {
+                if (!detail.classList.contains('open')) return;
+                const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
+                if (Number.isFinite(delta)) {
+                    if (e.cancelable) e.preventDefault();
+                    scroller.scrollTop += delta;
+                }
+            };
+            const forwardTouchMove = (() => {
+                let lastY = null;
+                return (e) => {
+                    if (lastY == null) { lastY = e.touches && e.touches[0] ? e.touches[0].clientY : null; return; }
+                    const y = e.touches && e.touches[0] ? e.touches[0].clientY : lastY;
+                    const dy = lastY - y;
+                    lastY = y;
+                    if (Number.isFinite(dy)) scroller.scrollTop += dy;
+                };
+            })();
+            detail.addEventListener('wheel', forwardWheel, { passive: false });
+            detail.addEventListener('touchmove', forwardTouchMove, { passive: true });
+        }
     }
 })();
 
@@ -247,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburgerMenu.setAttribute('role', 'button');
         hamburgerMenu.setAttribute('tabindex', '0');
         hamburgerMenu.setAttribute('aria-label', 'Toggle navigation');
+        hamburgerMenu.setAttribute('aria-expanded', 'false');
     }
     // Control hamburger visibility: only show after exiting hero (or if open)
     const isPastHero = () => {
@@ -269,17 +259,33 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', updateHamburgerVisibility);
 
     if (hamburgerMenu && mainNav) {
-        hamburgerMenu.addEventListener('click', function() {
-            mainNav.classList.toggle('open');
-            hamburgerMenu.classList.toggle('open'); // Trasformazione icona
+        const toggleHamburger = () => {
+            const isOpen = !hamburgerMenu.classList.contains('open');
+            hamburgerMenu.classList.toggle('open', isOpen);
+            mainNav.classList.toggle('open', isOpen);
+            hamburgerMenu.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            // Debug: visual trace
+            console.debug('[hamburger] toggled ->', { isOpen });
             updateHamburgerVisibility();
+        };
+
+        // Touch guard to avoid double toggle (touchstart + click)
+        let touched = false;
+        hamburgerMenu.addEventListener('touchstart', (e) => {
+            touched = true;
+            e.preventDefault();
+            e.stopPropagation();
+            toggleHamburger();
+        }, { passive: false });
+
+        hamburgerMenu.addEventListener('click', function(e) {
+            if (touched) { touched = false; return; }
+            toggleHamburger();
         });
         hamburgerMenu.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                mainNav.classList.toggle('open');
-                hamburgerMenu.classList.toggle('open');
-                updateHamburgerVisibility();
+                toggleHamburger();
             }
         });
 
@@ -289,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 mainNav.classList.remove('open');
                 hamburgerMenu.classList.remove('open');
                 updateHamburgerVisibility();
+                hamburgerMenu.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -298,28 +305,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 mainNav.classList.remove('open');
                 hamburgerMenu.classList.remove('open');
                 updateHamburgerVisibility();
+                hamburgerMenu.setAttribute('aria-expanded', 'false');
             });
         });
     }
 
-    // Dynamic contrast for hamburger based on background (detect .is-dark under the button)
-    const updateHamburgerContrast = () => {
-        if (!hamburgerMenu) return;
-        const rect = hamburgerMenu.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
-        const elements = document.elementsFromPoint(x, y);
-        const isOverDark = elements.some(el =>
-            el && el.classList && (el.classList.contains('is-dark') || (el.closest && el.closest('.is-dark')))
-        );
-        hamburgerMenu.classList.toggle('on-dark', isOverDark);
-        hamburgerMenu.classList.toggle('on-light', !isOverDark);
-    };
-
-    // Run on load and keep updating on scroll/resize on all pages
-    updateHamburgerContrast();
-    window.addEventListener('scroll', updateHamburgerContrast, { passive: true });
-    window.addEventListener('resize', updateHamburgerContrast);
+    // Theme-only control for hamburger appearance; no dynamic contrast
 
     // Reveal on scroll limited to a curated set of classes (exclude carousel)
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -702,17 +693,40 @@ window.addEventListener('load', () => {
         }
     };
 
-    // Drag handlers (mouse + touch)
-    const onDragStart = (clientX) => {
+    // Drag handlers (mouse + touch) with gesture direction lock
+    let dragStartY = 0;
+    let gestureLocked = false; // becomes true when we decide horizontal vs vertical
+    let lockDirection = null;  // 'x' for horizontal, 'y' for vertical
+
+    const onDragStart = (clientX, clientY = 0) => {
         cancelAnimationFrame(rafId);
         isDragging = true;
         dragStartX = clientX;
+        dragStartY = clientY;
         dragStartPos = position;
         container.classList.add('dragging');
+        gestureLocked = false;
+        lockDirection = null;
     };
 
-    const onDragMove = (clientX) => {
+    const onDragMove = (clientX, clientY = 0, e = null) => {
         if (!isDragging) return;
+        // Determine gesture direction once the movement exceeds threshold
+        if (!gestureLocked && clientY !== 0) {
+            const dx = Math.abs(clientX - dragStartX);
+            const dy = Math.abs(clientY - dragStartY);
+            const threshold = 8; // px
+            if (dx > threshold || dy > threshold) {
+                lockDirection = dx > dy ? 'x' : 'y';
+                gestureLocked = true;
+            }
+        }
+        if (gestureLocked && lockDirection === 'y') {
+            // Let the page scroll vertically; do not handle as carousel drag
+            return;
+        }
+        // We are handling horizontal drag; prevent page scroll on touch devices
+        if (e && e.cancelable) e.preventDefault();
         const delta = clientX - dragStartX; // dragging right -> positive delta
         // Follow the pointer like grabbing the photo
         position = dragStartPos - delta;
@@ -736,21 +750,21 @@ window.addEventListener('load', () => {
     // Mouse events
     container.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        onDragStart(e.clientX);
+        onDragStart(e.clientX, e.clientY);
     });
-    window.addEventListener('mousemove', (e) => onDragMove(e.clientX));
+    window.addEventListener('mousemove', (e) => onDragMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', onDragEnd);
 
-    // Touch events
+    // Touch events (non-passive to allow preventDefault during horizontal drag)
     container.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
-        onDragStart(t.clientX);
-    }, { passive: true });
+        onDragStart(t.clientX, t.clientY);
+    }, { passive: false });
     window.addEventListener('touchmove', (e) => {
         const t = e.touches[0];
-        onDragMove(t.clientX);
-    }, { passive: true });
-    window.addEventListener('touchend', onDragEnd);
+        onDragMove(t.clientX, t.clientY, e);
+    }, { passive: false });
+    window.addEventListener('touchend', onDragEnd, { passive: true });
 
     // Pause on hover (robust across devices/components)
     const setPaused = (v) => {
