@@ -1910,11 +1910,12 @@ body .project-detail:not(.open) { pointer-events: none !important; }
   overflow-y: auto !important;
   overflow-x: hidden !important;
   scroll-snap-type: none !important;
-  padding: clamp(8px, 2.2vw, 20px) clamp(16px, 3vw, 36px) clamp(20px, 4vw, 40px) !important;
+  padding: clamp(8px, 2.2vw, 20px) clamp(16px, 3vw, 36px) calc(clamp(20px, 4vw, 40px) + env(safe-area-inset-bottom)) !important;
   cursor: auto !important;
   user-select: auto !important;
   touch-action: auto !important;
   pointer-events: auto !important;
+  -webkit-overflow-scrolling: touch; /* momentum scrolling on iOS */
 }
 
 /* Stack slides vertically and use full available width */
@@ -1937,7 +1938,7 @@ body .project-detail:not(.open) { pointer-events: none !important; }
 /* On small screens maintain single column for readability */
 @media (max-width: 991.98px) {
   .project-detail .detail-slide.split { grid-template-columns: 1fr !important; grid-template-rows: auto !important; }
-  .project-detail .detail-slide.split .split-right { order: -1; min-height: 42vh; }
+  .project-detail .detail-slide.split .split-right { order: -1; min-height: 50svh; }
 }
 
 /* Media within slide should adapt to content height */
@@ -1947,7 +1948,7 @@ body .project-detail:not(.open) { pointer-events: none !important; }
   inset: auto !important;
   width: 100% !important;
   height: auto !important;
-  max-height: 56vh; /* keep images reasonable in vertical flow */
+  max-height: 56dvh; /* use dynamic viewport to account for browser UI */
   object-fit: cover !important;
 }
 
@@ -2021,14 +2022,14 @@ body .project-detail:not(.open) { pointer-events: none !important; }
 
 /* Stack on small screens */
 @media (max-width: 1199.98px) { /* tablet */
-  .project-detail .process-step .step-media img { max-height: 42vh; }
+  .project-detail .process-step .step-media img { max-height: 42dvh; }
 }
 @media (max-width: 991.98px) { /* mobile */
   .project-detail .process-step,
   .project-detail .process-step.reverse {
     grid-template-columns: 1fr;
   }
-  .project-detail .process-step .step-media img { max-height: 32vh; }
+  .project-detail .process-step .step-media img { max-height: 36svh; }
 }
 
 /* Dark mode adjustments for process steps */
