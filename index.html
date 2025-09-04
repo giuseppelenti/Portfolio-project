@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giuseppe Lenti® | Portfolio</title>
+    <!-- Foglio di stile principale -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Stili About page -->
+    <link rel="stylesheet" href="about.css">
+    <!-- Google Fonts e FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacques+Francois+Shadow&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="home">
+    <!-- Social e contatti in alto a destra -->
+    
+    <!-- Loader iniziale con cursore personalizzato -->
+    <div id="loader">
+        <!-- Logo visibile solo durante il loading a schermo pieno -->
+        <span class="loader-logo">
+            <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="" width="100" height="100">
+        </span>
+        <!-- Badge testuale che appare quando il loader si minimizza (top-left) -->
+        <div id="loading-cursor">Loading</div>
+    </div>
+    <!-- Hamburger menu per mobile -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+        <span class="span-1"></span>
+        <span class="span-2"></span>
+        <span class="span-3"></span>
+    </div>
+    <!-- Mobile side navigation -->
+    <nav id="mainNav" aria-label="Mobile Navigation">
+        <ul>
+            <li><a href="#works" class="nav-item"><span class="nav-number">01</span> Works</a></li>
+            <li><a href="#about" class="nav-item"><span class="nav-number">02</span> About</a></li>
+            <li><a href="#playground" class="nav-item"><span class="nav-number">03</span> Playground</a></li>
+            <li><a href="#contact" class="nav-item"><span class="nav-number">04</span> Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header con titolo sito -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="site-title">
+                        <h1 class="main-title">PORTFOLIO®</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <!-- Sezione eroe con nome e ruolo -->
+        <div class="hero-section container-fluid text-center">
+            <!-- Topbar removed: loader now occupies top-left -->
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h1 class="hero-name">
+                        <span class="first-name jacques-francois-shadow-regular">Giuseppe</span>
+                        <span class="last-name">Lenti</span>
+                    </h1>
+                    <h2 class="subtitle">UX / UI Designer</h2>
+                    <!-- Navbar principale in orizzontale sotto i titoli -->
+                    <nav class="hero-nav">
+                        <ul class="d-flex flex-row justify-content-center align-items-center">
+                            <li><a href="#works" class="nav-item">
+                                <span class="nav-number">01</span> Works
+                            </a></li>
+                            <li><a href="#about" class="nav-item">
+                                <span class="nav-number">02</span> About
+                            </a></li>
+                            <li><a href="#playground" class="nav-item">
+                                <span class="nav-number">03</span> Playground
+                            </a></li>
+                            <li><a href="#contact" class="nav-item">
+                                <span class="nav-number">04</span> Contact
+                            </a></li>
+                            <li>
+                                <p>&copy;2025</p>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Projects Section: horizontal draggable scroller -->
+        <section id="projects" class="projects-section">
+            <div class="container-fluid">
+                <div class="projects-header d-flex align-items-center justify-content-between">
+                    <h1 class="main-title">
+                        <span class="about-half-dark">Pro</span><span class="about-half-light">jects</span>
+                    </h1>
+                    <p class="projects-subtitle">Hold and drag →</p>
+                </div>
+                <div class="projects-scroller" aria-label="Projects scroller" role="region">
+                    <!-- Topic: Accessibilità -->
+                    <div class="project-topic-block">
+                        <div class="topic-media">
+                            <img src="./img/comicsd.jpg" alt="Accessibilità - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
+                        </div>
+                        <div class="topic-info">
+                            <a class="topic-download" href="./img/comicsd.jpg" download="Accessibilita-anteprima.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            </a>
+                            <h3 class="topic-title">Accessibilità</h3>
+                            <p class="topic-meta">WCAG, contrasto, navigazione da tastiera, ARIA</p>
+                        </div>
+                    </div>
+                    <!-- Topic: Front end -->
+                    <div class="project-topic-block">
+                        <div class="topic-media">
+                            <img src="./img/cinema.jpg" alt="Front end - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
+                        </div>
+                        <div class="topic-info">
+                            <a class="topic-download" href="./img/cinema.jpg" download="Frontend-anteprima.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            </a>
+                            <h3 class="topic-title">Front end</h3>
+                            <p class="topic-meta">HTML, CSS, JavaScript, performance</p>
+                        </div>
+                    </div>
+                    <!-- Topic: UI Design -->
+                    <div class="project-topic-block">
+                        <div class="topic-media">
+                            <img src="./img/81pck0VNp7L.jpg" alt="UI Design - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
+                        </div>
+                        <div class="topic-info">
+                            <a class="topic-download" href="./img/81pck0VNp7L.jpg" download="UIDesign-anteprima.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            </a>
+                            <h3 class="topic-title">UI Design</h3>
+                            <p class="topic-meta">Design system, componenti, tipografia</p>
+                        </div>
+                    </div>
+                    <!-- Topic: Prototyping -->
+                    <div class="project-topic-block">
+                        <div class="topic-media">
+                            <img src="./img/videogames.jpg" alt="Prototyping - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
+                        </div>
+                        <div class="topic-info">
+                            <a class="topic-download" href="./img/videogames.jpg" download="Prototyping-anteprima.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            </a>
+                            <h3 class="topic-title">Prototyping</h3>
+                            <p class="topic-meta">Figma, micro-interazioni, user flow</p>
+                        </div>
+                    </div>
+                    <!-- Topic: Branding -->
+                    <div class="project-topic-block">
+                        <div class="topic-media">
+                            <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Branding - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
+                        </div>
+                        <div class="topic-info">
+                            <a class="topic-download" href="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" download="Branding-anteprima.png" title="Scarica allegato" aria-label="Scarica allegato">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            </a>
+                            <h3 class="topic-title">Branding</h3>
+                            <p class="topic-meta">Logo, palette, composizione</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sezione About (unita da about.html) -->
+        <section id="about">
+            <div class="container-fluid full-viewport">
+                <div class="about-image row g-0 align-items-center">
+                    <div class="col-12 text-start">
+                        <div class="about-title-wrap">
+                            <h1 class="main-title">
+                                <span class="about-half-dark">Ab</span><span class="about-half-light">out</span>
+                            </h1>
+                            <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-0 align-items-center">
+                    <div class="col-12 giant-text">
+                        <div class="about-caption-1 giant-text">
+                            <p class="lead"> In the game for over 6 years, I'm currently based in Ho Chi Minh city, working as an independent designer since July, 2022.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section is-dark">
+            <div class="container-fluid full-viewport">
+                <div class="row g-0 align-items-center">
+                    <div class="col-12 col-lg-6 order-1 order-lg-1">
+                        <div class="about-caption">
+                            <h2>Ciao! Il mio nome è Giuseppe</h2>
+                            <p class="lead">UX/UI Designer &amp; Web Designer</p>
+                            <p>
+                                Gioco con colori e idee da quando ero bambino, poi a 16 anni ho deciso di prenderla sul serio e mi sono buttato nel mondo del design. Da allora non ho più smesso di smanettare con web e UX/UI.
+                            </p>
+                            <p>
+                                Amo il cinema e i videogiochi (spoiler: li analizzo come fossero progetti di design). Nei miei lavori cerco sempre di unire creatività e un pizzico di attenzione nerd ai dettagli.
+                            </p>
+                            <p>
+                                Strumenti preferiti? Illustrator, Figma, Photoshop... ma anche HTML, CSS e JavaScript, perché le cose belle devono pure funzionare.
+                            </p>
+                            <div class="about-stats stats-variant-cartoon" aria-label="Statistiche personali">
+                                <div class="stat-item">
+                                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-pen-ruler"></i></div>
+                                    <div class="stat-value" data-target="10" data-prefix="+" data-suffix="" aria-label="più dieci">0</div>
+                                    <div class="stat-label">progetti individuali</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-people-group"></i></div>
+                                    <div class="stat-value" data-target="5" data-prefix="+" data-suffix="" aria-label="più cinque">0</div>
+                                    <div class="stat-label">collaborazioni</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-briefcase"></i></div>
+                                    <div class="stat-value" data-target="6" data-prefix="" data-suffix="+" aria-label="sei più">0</div>
+                                    <div class="stat-label">anni di esperienza</div>
+                                </div>
+                            </div>
+                            <!-- Disney loader image under stats -->
+                            <div class="about-stats-logo">
+                                <img src="./img/videogame.png" alt="Disney loader logo" class="stats-logo" loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 order-2 order-lg-2">
+                        <div class="about-content">
+                            <div class="carousel-container">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide"><img src="./img/cinema.jpg" alt="Design workspace desk"></div>
+                                    <div class="carousel-slide"><img src="./img/videogames.jpg" alt="UX sticky notes planning"></div>
+                                    <div class="carousel-slide"><img src="./img/comicsd.jpg" alt="Frontend code and UI"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="container-fluid full-viewport">
+                <div class="row g-0 align-items-start">
+                    <!-- Colonna sinistra: Intro + Esperienze Lavorative -->
+                    <div class="col-12 col-lg-6">
+                        <!-- Intro originale -->
+                        <div class="info-column intro-column">
+                            <h2 class="intro-title">Web Design Frontend,<br>Graphic Design, Prototyping,<br>UI/UX Design, User test, Copywriting.</h2>
+                        </div>
+                        <hr class="info-separator reveal" aria-hidden="true">
+                        <!-- Esperienze Lavorative -->
+                        <div class="info-column resume-block resume-experience">
+                            <h2 class="resume-title reveal">Esperienze Lavorative</h2>
+                            <ul class="resume-list timeline">
+                                <li class="resume-item reveal">
+                                    <div class="resume-item-header">
+                                        <span class="resume-role"><i class="fa-solid fa-briefcase"></i> UX/UI Designer</span>
+                                        <span class="resume-meta">
+                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> 2022 — Oggi</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-user"></i> Freelance</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-location-dot"></i> Remote</span>
+                                        </span>
+                                    </div>
+                                    <p class="resume-desc">Progettazione e prototipazione di interfacce, design system, test con utenti, landing e siti vetrina.</p>
+                                </li>
+                                <li class="resume-item reveal">
+                                    <div class="resume-item-header">
+                                        <span class="resume-role"><i class="fa-solid fa-briefcase"></i> Web Designer</span>
+                                        <span class="resume-meta">
+                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> 2019 — 2022</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-people-group"></i> Agenzie & Collaborazioni</span>
+                                        </span>
+                                    </div>
+                                    <p class="resume-desc">Sviluppo frontend (HTML/CSS/JS), SEO di base, performance e accessibilità, handoff a team dev.</p>
+                                </li>
+                                <li class="resume-item reveal">
+                                    <div class="resume-item-header">
+                                        <span class="resume-role"><i class="fa-solid fa-briefcase"></i> Graphic Designer</span>
+                                        <span class="resume-meta">
+                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> 2018 — 2019</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-wand-magic-sparkles"></i> Progetti personali</span>
+                                        </span>
+                                    </div>
+                                    <p class="resume-desc">Branding, poster, social content e impaginazione per piccole realtà locali.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Colonna destra: Direction/Design originali + Formazione Scolastica -->
+                    <div class="col-12 col-lg-6 info-right">
+                        <!-- Blocchi originali Direction & Design -->
+                        <div class="row g-0">
+                            <div class="col-12">
+                                <div class="info-column direction-column">
+                                    <h3 class="info-title">Direction</h3>
+                                    <p class="info-text">In my opinion, deep understanding of the brief and client is a must in the starting point. Determining project goals and functional specifications, knowing competitions and target audiences, making researches will be taken at this stage in order to find a precise combination between Typography, Color, Composition, Motion and brand assets.</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-column design-column">
+                                    <h3 class="info-title">Design</h3>
+                                    <p class="info-text">After collecting a right mood and tone in the Direction stage. My mission at this point is connecting the dots and making various versions to find the proper design. My goal is always about creating an experience that not only emphasises the characteristics of each project but also elegant and satisfied to use.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="info-separator reveal" aria-hidden="true">
+                        <!-- Formazione Scolastica -->
+                        <div class="info-column resume-block resume-education">
+                            <h2 class="resume-title reveal">Formazione</h2>
+                            <ul class="resume-list timeline timeline--right">
+                                <li class="resume-item reveal">
+                                    <div class="resume-item-header">
+                                        <span class="resume-role"><i class="fa-solid fa-graduation-cap"></i> Diploma · Liceo Scientifico</span>
+                                        <span class="resume-meta">
+                                            <span class="resume-meta-chip"><i class="fa-regular fa-calendar"></i> Anno</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-school"></i> Istituto</span>
+                                        </span>
+                                    </div>
+                                    <p class="resume-desc">Indirizzo scientifico con approfondimento in informatica e grafica.</p>
+                                </li>
+                                <li class="resume-item reveal">
+                                    <div class="resume-item-header">
+                                        <span class="resume-role"><i class="fa-solid fa-graduation-cap"></i> Corsi UX/UI, Prototyping & Frontend</span>
+                                        <span class="resume-meta">
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-layer-group"></i> Figma · Illustrator</span>
+                                            <span class="resume-meta-chip"><i class="fa-solid fa-code"></i> HTML/CSS/JS</span>
+                                        </span>
+                                    </div>
+                                    <p class="resume-desc">Percorsi formativi e autodidatta su UX, UI, motion e sviluppo frontend.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Project Detail Fullscreen Overlay -->
+    <section id="project-detail" class="project-detail" aria-hidden="true" role="dialog" aria-modal="true">
+        <button class="project-detail-close" aria-label="Close project detail">×</button>
+        <div class="project-detail-header">
+            <h2 class="project-detail-title"></h2>
+            <p class="project-detail-subtitle">Scorri orizzontalmente per i dettagli</p>
+        </div>
+        <div class="project-detail-scroller" aria-label="Project detail scroller" role="region">
+            <!-- Split fullscreen slides: Left (copy), Right (image) -->
+            <article class="detail-slide split" data-topic="Accessibilità">
+                <div class="split-left hero">
+                    <a class="download-btn" href="./img/comicsd.jpg" download="Accessibilita-allegato.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </a>
+                    <div class="split-dot" aria-hidden="true"></div>
+                    <h2 class="hero-headline">SERIOUS.BUSINESS è un'agenzia che progetta esperienze accessibili. Connettiamo creatività e strategia per far funzionare (e piacere) i prodotti.</h2>
+                    <div class="split-nav" aria-hidden="true">
+                        <div class="nav-item"><span class="num">01</span><span class="label">Works</span></div>
+                        <div class="nav-item"><span class="num">02</span><span class="label">About</span></div>
+                        <div class="nav-item"><span class="num">03</span><span class="label">Playground</span></div>
+                        <div class="nav-item"><span class="num">04</span><span class="label">Contact</span></div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <img src="./img/comicsd.jpg" alt="Accessibilità - dettaglio" />
+                </div>
+            </article>
+            <article class="detail-slide split" data-topic="Front end">
+                <div class="split-left hero">
+                    <a class="download-btn" href="./img/cinema.jpg" download="Frontend-allegato.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </a>
+                    <div class="split-dot" aria-hidden="true"></div>
+                    <h2 class="hero-headline">Progettiamo front-end ad alte prestazioni: componenti puliti, motion design misurato e accessibilità integrata.</h2>
+                    <div class="split-nav" aria-hidden="true">
+                        <div class="nav-item"><span class="num">01</span><span class="label">Works</span></div>
+                        <div class="nav-item"><span class="num">02</span><span class="label">About</span></div>
+                        <div class="nav-item"><span class="num">03</span><span class="label">Playground</span></div>
+                        <div class="nav-item"><span class="num">04</span><span class="label">Contact</span></div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <img src="./img/cinema.jpg" alt="Front end - dettaglio" />
+                </div>
+            </article>
+            <article class="detail-slide split" data-topic="UI Design">
+                <div class="split-left hero">
+                    <a class="download-btn" href="./img/81pck0VNp7L.jpg" download="UIDesign-allegato.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </a>
+                    <div class="split-dot" aria-hidden="true"></div>
+                    <h2 class="hero-headline">Costruiamo UI system coerenti: tipografia, griglie e librerie di componenti per crescere senza attrito.</h2>
+                    <div class="split-nav" aria-hidden="true">
+                        <div class="nav-item"><span class="num">01</span><span class="label">Works</span></div>
+                        <div class="nav-item"><span class="num">02</span><span class="label">About</span></div>
+                        <div class="nav-item"><span class="num">03</span><span class="label">Playground</span></div>
+                        <div class="nav-item"><span class="num">04</span><span class="label">Contact</span></div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <img src="./img/81pck0VNp7L.jpg" alt="UI Design - dettaglio" />
+                </div>
+            </article>
+            <article class="detail-slide split" data-topic="Prototyping">
+                <div class="split-left hero">
+                    <a class="download-btn" href="./img/videogames.jpg" download="Prototyping-allegato.jpg" title="Scarica allegato" aria-label="Scarica allegato">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </a>
+                    <div class="split-dot" aria-hidden="true"></div>
+                    <h2 class="hero-headline">Prototipi realistici per validare idee in fretta: testiamo presto, iteriamo spesso, impariamo in fretta.</h2>
+                    <div class="split-nav" aria-hidden="true">
+                        <div class="nav-item"><span class="num">01</span><span class="label">Works</span></div>
+                        <div class="nav-item"><span class="num">02</span><span class="label">About</span></div>
+                        <div class="nav-item"><span class="num">03</span><span class="label">Playground</span></div>
+                        <div class="nav-item"><span class="num">04</span><span class="label">Contact</span></div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <img src="./img/videogames.jpg" alt="Prototyping - dettaglio" />
+                </div>
+            </article>
+            <article class="detail-slide split" data-topic="Branding">
+                <div class="split-left hero">
+                    <a class="download-btn" href="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" download="Branding-allegato.png" title="Scarica allegato" aria-label="Scarica allegato">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    </a>
+                    <div class="split-dot" aria-hidden="true"></div>
+                    <h2 class="hero-headline">Brand che fanno sorridere: uniamo strategia e creatività per identità memorabili.</h2>
+                    <div class="split-nav" aria-hidden="true">
+                        <div class="nav-item"><span class="num">01</span><span class="label">Works</span></div>
+                        <div class="nav-item"><span class="num">02</span><span class="label">About</span></div>
+                        <div class="nav-item"><span class="num">03</span><span class="label">Playground</span></div>
+                        <div class="nav-item"><span class="num">04</span><span class="label">Contact</span></div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Branding - dettaglio" />
+                </div>
+            </article>
+        </div>
+    </section>
+    <!-- Bottone per attivare/disattivare la dark mode con icona -->
+    <button title="Toggle Dark Mode" type="button" id="darkModeToggle" style="
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    color:white;
+">
+    <span id="darkModeIcon">
+        <i class="fa fa-moon"></i>
+    </span>
+</button>
+<!-- Bottone per tornare su -->
+<button title="Scroll to Top" id="scrollTopBtn" style="
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+">
+    <span>
+        <i class="fa fa-arrow-up"></i>
+    </span>
+</button>
+
+<section class="footer is-dark footer-cta">
+  <div class="container-fluid">
+    <!-- Illustration -->
+    <div class="footer-illustration">
+      <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Illustration" />
+    </div>
+    <!-- Headings -->
+    <div class="footer-headings text-center">
+      <p class="footer-eyebrow">Don't be shy,</p>
+      <h2 class="footer-title">Say Hello</h2>
+    </div>
+    <!-- CTA -->
+    <div class="footer-cta-actions text-center">
+      <a class="footer-cta-link" href="mailto:peppe.lenti@virgilio.it">GET IN TOUCH</a>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/peppelenti_/" aria-label="Instagram" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/in/giuseppe-lenti-/" aria-label="LinkedIn" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Loader
+    document.body.classList.add('loading');
+    const loadingCursor = document.getElementById('loading-cursor');
+    document.addEventListener('mousemove', function(e) {
+        if(document.body.classList.contains('loading')) {
+            loadingCursor.style.left = (e.clientX + 10) + 'px';
+            loadingCursor.style.top = (e.clientY + 10) + 'px';
+        }
+    });
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loader').classList.add('loader-bottom');
+            document.body.classList.remove('loading');
+        }, 2200);
+    });
+
+    // Safety fallback: if for any reason 'load' didn't fire or classes weren't toggled,
+    // force-disable loading after a few seconds to restore pointer/scroll.
+    setTimeout(function() {
+        const loader = document.getElementById('loader');
+        if (document.body.classList.contains('loading')) {
+            document.body.classList.remove('loading');
+        }
+        if (loader && !loader.classList.contains('loader-bottom')) {
+            loader.classList.add('loader-bottom');
+        }
+    }, 5000);
+
+    // Navbar animazione lettere
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const numberSpan = item.querySelector('.nav-number');
+        let text = item.childNodes[item.childNodes.length - 1].textContent.trim();
+        if (text) {
+            item.childNodes[item.childNodes.length - 1].textContent = '';
+            text.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.classList.add('nav-animated');
+                span.style.animationDelay = `${i * 0.06}s`;
+                item.appendChild(span);
+            });
+        }
+    });
+
+    // Dark mode toggle handled in script.js to avoid duplicate listeners
+
+    // Scroll to top button
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Hamburger menu toggle
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const mainNav = document.getElementById('mainNav');
+    if (hamburgerMenu && mainNav) {
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.classList.toggle('open');
+            mainNav.classList.toggle('open');
+        });
+    }
+
+    // Animazione digitazione su first-name e last-name
+    function typeWriter(element, text, speed = 80) {
+        element.textContent = "";
+        let i = 0;
+        function typing() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(typing, speed);
+            }
+        }
+        typing();
+    }
+    const firstName = document.querySelector('.first-name');
+    const lastName = document.querySelector('.last-name');
+    typeWriter(firstName, "Giuseppe", 80);
+    setTimeout(() => {
+        typeWriter(lastName, "Lenti", 80);
+    }, 900);
+});
+    </script>
+    <script src="script.js"></script>
+    <!-- Bootstrap JS e dipendenze -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
