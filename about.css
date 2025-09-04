@@ -24,13 +24,15 @@
 .timeline .resume-item::before {
   content: "";
   position: absolute;
-  left: -18px; /* align exactly with line at 10px in the container (28px padding - 10px line) */
+  /* Bar center: 10px from UL content + 1px (half of 2px bar) */
+  left: 11px;
   top: 16px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #1a1a1a;
-  box-shadow: none; /* remove outer glow */
+  box-shadow: none;
+  transform: translateX(-50%);
 }
 
 /* Right-aligned timeline (education) */
@@ -49,9 +51,11 @@
 }
 .timeline.timeline--right .resume-item::before {
   left: auto;
-  right: -18px; /* mirror alignment for right-side line at 10px */
+  /* Bar center from right: 10px + 1px */
+  right: 11px;
   background: #1a1a1a;
-  box-shadow: none; /* remove outer glow */
+  box-shadow: none;
+  transform: translateX(50%);
 }
 
 /* Dark mode adjustments for timeline */
@@ -68,10 +72,12 @@ body.dark-mode .timeline.timeline--right .resume-item::before {
 @media (max-width: 576px) {
   .timeline { padding-left: 22px; }
   .timeline::before { left: 8px; }
-  .timeline .resume-item::before { left: -18px; }
+  /* Mobile bar center: 8px + 1px = 9px */
+  .timeline .resume-item::before { left: 9px; transform: translateX(-50%); }
   .timeline.timeline--right { padding-right: 22px; }
   .timeline.timeline--right::before { right: 8px; }
-  .timeline.timeline--right .resume-item::before { right: -18px; }
+  /* Mobile right center: 9px */
+  .timeline.timeline--right .resume-item::before { right: 9px; transform: translateX(50%); }
   /* Ensure titles are left-aligned on small screens */
   .resume-experience .resume-title,
   .info-right .resume-education .resume-title {
@@ -102,6 +108,8 @@ body.dark-mode .timeline.timeline--right .resume-item::before {
 .resume-experience .resume-title { padding-left: 44px; }
 /* Right column: 28px (timeline) + 16px (item inner padding) */
 .info-right .resume-education .resume-title { padding-right: 44px; }
+/* Left column education (using left-side timeline): match left padding */
+.info-section > .container-fluid > .row > .col-12.col-lg-6:first-child .resume-education .resume-title { padding-left: 44px; }
 /* Mobile: timeline padding reduces to 22px, so titles need 22 + 16 = 38px */
 @media (max-width: 576px) {
   .resume-experience .resume-title { padding-left: 0; }
@@ -190,17 +198,40 @@ body.dark-mode .resume-meta-chip { border-color: rgba(255,255,255,0.22); backgro
 .intro-column + .info-separator { margin-top: 10px; }
 .resume-block + .resume-block { margin-top: 16px; }
 
+.resume-block.resume-education {
+    margin-top: auto;
+}
+
 /* Right column alignment for meta chips */
   @media (min-width: 992px) {
-  /* Make row stretch columns to equal height */
-  .info-section > .container-fluid > .row { align-items: stretch; }
-  .info-section > .container-fluid > .row > .col-12.col-lg-6 { display: flex; flex-direction: column; }
+  /* Make row stretch columns to equal height and align content */
+  .info-section .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .info-section .col-lg-6 {
+    display: flex;
+    flex-direction: column;
+  }
   /* Align Esperienze (left) and Formazione (right) at the same top line */
   /* Left column becomes flex to allow ordering */
   .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child {
     display: flex;
     flex-direction: column;
     gap: 24px;
+  }
+  /* Ensure visual order: intro first, education last (anchored at bottom) */
+  .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .intro-column { order: 1; }
+  .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .info-separator { order: 2; }
+  .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .resume-education { order: 3; margin-top: auto; }
+  /* Mirror right padding: give left education the same left inset as section's right padding */
+  .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .resume-education {
+    margin-left: clamp(16px, 5vw, 56px);
+  }
+  @media (max-width: 576px) {
+    .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .resume-education {
+      margin-left: 0;
+    }
   }
   /* Move Experience below Intro/Separator */
   .info-section > .container-fluid > .row > .col-12.col-lg-6:first-child > .intro-column { order: 1; }
@@ -212,6 +243,9 @@ body.dark-mode .resume-meta-chip { border-color: rgba(255,255,255,0.22); backgro
   /* Keep Direction/Design row first, then separator, then Education below */
   .info-right .row { order: 1; }
   .info-right .info-separator { order: 2; }
+  /* Mirror left inset: give the right education a symmetric right margin */
+  .info-right > .resume-education { margin-right: clamp(16px, 5vw, 56px); }
+  @media (max-width: 576px) { .info-right > .resume-education { margin-right: 0; } }
   .info-right .resume-education { order: 3; }
   /* Prevent half-width tiles in right column that can distort heights */
   .info-right .info-column,
@@ -225,7 +259,7 @@ body.dark-mode .resume-meta-chip { border-color: rgba(255,255,255,0.22); backgro
   .info-right .info-separator { margin-bottom: 0 !important; }
   /* TOP alignment without extra offset */
   .info-section .resume-experience { margin-top: 0 !important; }
-  .info-right .resume-education { margin-top: 0 !important; }
+  .info-right .resume-education { margin-top: auto !important; }
   /* Make resume blocks flex containers to avoid internal spacing affecting baseline */
   .info-section .resume-experience,
   .info-right .resume-education {
@@ -1079,8 +1113,13 @@ body.dark-mode .about-half-light {
     align-items: stretch;
 }
 
-/* --- Force visible height for carousel chain (override previous resets) --- */
-.about-section .row { min-height: 100vh !important; }
+/* --- Force visible height for carousel chain (override previous resets) */
+.about-section .row { 
+  min-height: 100vh !important;
+  display: flex;
+  align-items: flex-end; /* Align items at the bottom */
+  padding-bottom: 2rem; /* Add some space at the bottom */
+}
 .about-section .about-content { min-height: 0 !important; height: auto !important; }
 .about-section .carousel-container { height: 70vh !important; min-height: 60vh !important; position: relative; z-index: 10; }
 .about-section .carousel-track,

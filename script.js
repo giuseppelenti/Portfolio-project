@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
         scrollTopBtn.classList.add('visible');
     }
 
+    // moved tilt and magnetic hover below prefersReduced declaration
     // Navbar animazione lettere identica a index.html
     document.querySelectorAll('.nav-item').forEach(item => {
         const numberSpan = item.querySelector('.nav-number');
@@ -331,6 +332,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ensure base state only on chosen targets
     revealTargets.forEach(el => el.classList.add('reveal'));
 
+    // Ensure info columns participate in reveal-on-scroll
+    const infoCols = Array.from(document.querySelectorAll('.info-column'));
+    infoCols.forEach(el => el.classList.add('reveal'));
+    // Also add them to the observed target list so they get 'is-visible'
+    revealTargets = revealTargets.concat(infoCols);
+
     // Safety: if any carousel element accidentally has reveal/is-visible, remove to ensure visibility
     document.querySelectorAll('.carousel-container, .carousel-container *').forEach(el => {
         el.classList.remove('reveal');
@@ -355,6 +362,82 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reduced motion or no targets: show immediately
         revealTargets.forEach(el => el.classList.add('is-visible'));
     }
+
+    // ==============================
+    // Tilt/Parallax for project cards + spotlight
+    // Magnetic hover for footer CTA
+    // (Respect reduced motion)
+    // ==============================
+    const initTiltParallax = () => {
+        if (prefersReduced) return;
+        const cards = document.querySelectorAll('.project-topic-block');
+        const maxTilt = 8; // degrees
+        const imgParallax = 1.06; // scale factor for subtle zoom
+        cards.forEach(card => {
+            const img = card.querySelector('.topic-image');
+            // Precompute bounding rect on enter for performance
+            let rect = null;
+            const onEnter = () => { rect = card.getBoundingClientRect(); };
+            const onMove = (e) => {
+                if (!rect) rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const px = Math.max(0, Math.min(1, x / rect.width));
+                const py = Math.max(0, Math.min(1, y / rect.height));
+                // Spotlight position via CSS custom props (consumed by ::after)
+                card.style.setProperty('--hx', `${(px * 100).toFixed(2)}%`);
+                card.style.setProperty('--hy', `${(py * 100).toFixed(2)}%`);
+                // Tilt around center
+                const tiltX = (py - 0.5) * -2 * maxTilt;
+                const tiltY = (px - 0.5) * 2 * maxTilt;
+                card.style.transform = `perspective(800px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+                if (img) {
+                    // Parallax image slight translate opposite tilt + subtle scale
+                    const tx = (0.5 - px) * 12;
+                    const ty = (0.5 - py) * 12;
+                    img.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${imgParallax})`;
+                }
+            };
+            const onLeave = () => {
+                card.style.transform = 'none';
+                if (img) img.style.transform = 'none';
+            };
+            card.addEventListener('pointerenter', onEnter);
+            card.addEventListener('pointermove', onMove);
+            card.addEventListener('pointerleave', onLeave);
+            card.addEventListener('pointercancel', onLeave);
+        });
+    };
+
+    const initMagneticCTA = () => {
+        if (prefersReduced) return;
+        const cta = document.querySelector('.footer-cta-link');
+        if (!cta) return;
+        const strength = 14; // px translation max
+        let rect = null;
+        const onEnter = () => { rect = cta.getBoundingClientRect(); };
+        const onMove = (e) => {
+            if (!rect) rect = cta.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const px = Math.max(0, Math.min(1, x / rect.width));
+            const py = Math.max(0, Math.min(1, y / rect.height));
+            const tx = (px - 0.5) * strength;
+            const ty = (py - 0.5) * strength;
+            cta.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
+        };
+        const onLeave = () => {
+            cta.style.transform = 'translate(0, 0)';
+        };
+        cta.addEventListener('pointerenter', onEnter);
+        cta.addEventListener('pointermove', onMove);
+        cta.addEventListener('pointerleave', onLeave);
+        cta.addEventListener('pointercancel', onLeave);
+    };
+
+    // Initialize interactions
+    initTiltParallax();
+    initMagneticCTA();
 
     // About stats: count-up animation when visible
     const statNodes = Array.from(document.querySelectorAll('.about-stats .stat-value'));

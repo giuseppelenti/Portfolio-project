@@ -1080,6 +1080,12 @@ body .hamburger-menu.open span {
     font-weight: 500;
     letter-spacing: 0.02em;
     padding: 6px 2px;
+    text-decoration: none;
+}
+
+#mainNav a.nav-item:hover,
+#mainNav a.nav-item:focus-visible {
+  text-decoration: none;
 }
 
 body.dark-mode #mainNav a.nav-item {
@@ -1859,7 +1865,6 @@ body.dark-mode .topic-meta { color: #c9c9c9; }
     .typo-spec .chevron-art { min-height: 120px; background-position: center; }
     .typo-spec .cols, .typo-spec .font-grid { grid-template-columns: 1fr; }
     .hero .hero-headline { font-size: clamp(1.6rem, 6vw, 2.2rem); padding: 0 6px; }
-    .hero .split-nav { left: 16px; right: 16px; }
   }
 
   /* Dark mode adjustments for split */
@@ -1946,6 +1951,90 @@ body .project-detail:not(.open) { pointer-events: none !important; }
   object-fit: cover !important;
 }
 
+/* =========================================================
+   Design Process: alternating media/text steps within slides
+   ========================================================= */
+.project-detail .process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vw, 28px);
+  margin-top: clamp(16px, 2vw, 24px);
+}
+.project-detail .process-step {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* side-by-side equal columns */
+  gap: clamp(12px, 2vw, 24px);
+  align-items: center;
+}
+.project-detail .process-step.reverse {
+  grid-template-columns: 1fr 1fr; /* keep equal split, order handled below */
+}
+.project-detail .process-step .step-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.project-detail .process-step .step-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 50vh; /* half-screen cap */
+  object-fit: cover;
+}
+.project-detail .process-step .step-content {
+  padding: clamp(8px, 1.5vw, 14px) clamp(8px, 1.8vw, 16px);
+}
+.project-detail .step-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 8px 0;
+  font-weight: 800;
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+}
+.project-detail .step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 0.9em;
+  line-height: 1;
+}
+.project-detail .step-text {
+  margin: 0;
+  color: #333;
+  font-size: clamp(0.98rem, 1.6vw, 1.05rem);
+  line-height: 1.5;
+}
+
+/* Reverse: swap visual order on wide screens */
+@media (min-width: 992px) {
+  .project-detail .process-step.reverse .step-media { order: 2; }
+  .project-detail .process-step.reverse .step-content { order: 1; }
+}
+
+/* Stack on small screens */
+@media (max-width: 1199.98px) { /* tablet */
+  .project-detail .process-step .step-media img { max-height: 42vh; }
+}
+@media (max-width: 991.98px) { /* mobile */
+  .project-detail .process-step,
+  .project-detail .process-step.reverse {
+    grid-template-columns: 1fr;
+  }
+  .project-detail .process-step .step-media img { max-height: 32vh; }
+}
+
+/* Dark mode adjustments for process steps */
+body.dark-mode .project-detail .step-text { color: #cfcfcf; }
+body.dark-mode .project-detail .step-index { background: #f1f1f1; color: #111; }
+
 /* Zoom animation ghost element */
 .project-zoom-ghost {
   position: fixed;
@@ -1964,4 +2053,83 @@ body .project-detail:not(.open) { pointer-events: none !important; }
 }
 .project-zoom-ghost img {
   width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+}
+
+/* =========================================================
+   Micro-interactions: Info columns and Tilt context
+   ========================================================= */
+/* Light 3D context for project cards */
+.projects-scroller { perspective: 1000px; }
+.tilt-card { transform-style: preserve-3d; will-change: transform; }
+
+/* Subtle hover elevation for info blocks */
+.info-column {
+  transition: transform 320ms cubic-bezier(.22,1,.36,1), box-shadow 320ms ease, color 200ms ease;
+  will-change: transform, box-shadow;
+}
+.info-column:hover,
+.info-column:focus-within {
+  transform: translateY(-4px);
+}
+
+/* Emphasize titles on hover for Direction/Design */
+.direction-column:hover .info-title,
+.direction-column:focus-within .info-title,
+.design-column:hover .info-title,
+.design-column:focus-within .info-title {
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+/* Reduced motion: disable movement */
+@media (prefers-reduced-motion: reduce) {
+  .info-column { transition: none; transform: none !important; }
+  .tilt-card { transform: none !important; }
+}
+
+/* =========================================================
+   Project cards: cursor spotlight and smooth image transform
+   ========================================================= */
+.project-topic-block {
+  --hx: 50%;
+  --hy: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.project-topic-block .topic-image {
+  transition: transform 300ms cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.project-topic-block::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(380px 280px at var(--hx) var(--hy), rgba(255,255,255,0.30), rgba(255,255,255,0.0) 60%);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.project-topic-block:hover::after { opacity: 1; }
+body.dark-mode .project-topic-block::after {
+  background: radial-gradient(380px 280px at var(--hx) var(--hy), rgba(255,255,255,0.10), rgba(255,255,255,0.0) 60%);
+}
+
+/* =========================================================
+   Nav item underline animation
+   ========================================================= */
+.hero-nav .nav-item {
+  position: relative;
+  text-decoration: none; /* remove underline from links */
+}
+.hero-nav .nav-item::after {
+  content: none; /* underline disabled */
+  display: none;
+}
+.hero-nav .nav-item:hover,
+.hero-nav .nav-item:focus-visible { text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .project-topic-block .topic-image { transition: none; }
+  .hero-nav .nav-item::after { transition: none; }
 }
