@@ -178,27 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Reinforce media touch behavior after DOM replacement
             ensureOverlayMediaScrollable();
 
-            // Fallback: forward wheel/touch from overlay to scroller to guarantee vertical scroll
-            const forwardWheel = (e) => {
-                if (!detail.classList.contains('open')) return;
-                const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
-                if (Number.isFinite(delta)) {
-                    if (e.cancelable) e.preventDefault();
-                    scroller.scrollTop += delta;
-                }
-            };
-            const forwardTouchMove = (() => {
-                let lastY = null;
-                return (e) => {
-                    if (lastY == null) { lastY = e.touches && e.touches[0] ? e.touches[0].clientY : null; return; }
-                    const y = e.touches && e.touches[0] ? e.touches[0].clientY : lastY;
-                    const dy = lastY - y;
-                    lastY = y;
-                    if (Number.isFinite(dy)) scroller.scrollTop += dy;
-                };
-            })();
-            detail.addEventListener('wheel', forwardWheel, { passive: false });
-            detail.addEventListener('touchmove', forwardTouchMove, { passive: true });
+            // Remove custom forwarding; rely on native scrolling for smoothness
         }
     }
 })();
@@ -515,10 +495,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (projectsScroller) {
         let isDown = false;
         let startX = 0;
+        let startY = 0;
         let scrollStart = 0;
         let reboundRaf = 0;
         let prevTouchAction = '';
         let dragDelta = 0; // track movement to detect taps
+        let draggingHoriz = false; // direction lock
+        let activePointerId = null; // pointer capture id
 
         const maxScroll = () => Math.max(0, projectsScroller.scrollWidth - projectsScroller.clientWidth);
         // Elastic resistance using tanh for smoothness
@@ -527,21 +510,36 @@ document.addEventListener('DOMContentLoaded', function() {
             return k * Math.tanh(excess / k);
         };
 
-        const onDown = (clientX) => {
+        const onDown = (clientX, clientY) => {
             isDown = true;
             projectsScroller.classList.add('dragging');
             startX = clientX;
+            startY = clientY ?? startY;
             scrollStart = projectsScroller.scrollLeft;
             // During active drag, fully lock touch-action to avoid pointercancel
             prevTouchAction = projectsScroller.style.touchAction;
-            projectsScroller.style.touchAction = 'none';
+            // Do not lock yet; wait for clear horizontal intent
+            draggingHoriz = false;
             dragDelta = 0;
+            // Pause autoplay while touching
+            isPaused = true;
         };
 
         const onMove = (clientX, e) => {
             if (!isDown) return;
-            if (e && e.cancelable) e.preventDefault();
             const dx = clientX - startX;
+            const dy = (e && typeof e.clientY === 'number') ? (e.clientY - startY) : 0;
+            if (!draggingHoriz) {
+                // Lock to horizontal only if movement is mostly horizontal beyond threshold
+                if (Math.abs(dx) > Math.max(12, Math.abs(dy))) {
+                    draggingHoriz = true;
+                    projectsScroller.style.touchAction = 'none';
+                } else {
+                    // Allow vertical scroll; do not prevent default
+                    return;
+                }
+            }
+            if (e && e.cancelable) e.preventDefault();
             dragDelta += Math.abs(dx);
             const raw = scrollStart - dx;
             const max = maxScroll();
@@ -562,6 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
             projectsScroller.classList.remove('dragging');
             // Restore touch-action after drag completes
             projectsScroller.style.touchAction = prevTouchAction || 'pan-y';
+            draggingHoriz = false;
             // If outside bounds, animate back to nearest bound
             const max = maxScroll();
             const cur = projectsScroller.scrollLeft;
@@ -580,18 +579,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     projectsScroller.scrollLeft = v;
                     if (t < 1) {
                         reboundRaf = requestAnimationFrame(step);
-                    } else {
-                        reboundRaf = 0;
-                        projectsScroller.scrollLeft = target;
                     }
                 };
                 if (reboundRaf) cancelAnimationFrame(reboundRaf);
                 reboundRaf = requestAnimationFrame(step);
             }
         };
-
-        // Pointer Events with capture for smooth, continuous dragging
-        let activePointerId = null;
+        // Pointer listeners
         projectsScroller.addEventListener('pointerdown', (e) => {
             // Ignore pointer interactions that originate on the download button
             if (e.target && e.target.closest && e.target.closest('.topic-download')) {
@@ -600,8 +594,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.button !== 0 && e.pointerType === 'mouse') return; // left button only
             // Do NOT preventDefault here, to preserve native click on child cards
             activePointerId = e.pointerId;
-            projectsScroller.setPointerCapture(activePointerId);
-            onDown(e.clientX);
+            try { projectsScroller.setPointerCapture(activePointerId); } catch(_) {}
+            onDown(e.clientX, e.clientY);
         });
         projectsScroller.addEventListener('pointermove', (e) => {
             if (activePointerId === null || e.pointerId !== activePointerId) return;
