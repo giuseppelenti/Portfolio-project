@@ -704,6 +704,7 @@ window.addEventListener('load', () => {
     let isLooping = false;
     // Drag state
     let isDragging = false;
+    let isTouching = false; // true between touchstart and touchend; becomes dragging only if we lock to X
     // Hover pause state
     let isPaused = false;
     let dragStartX = 0;
@@ -793,32 +794,46 @@ window.addEventListener('load', () => {
     let lockDirection = null;  // 'x' for horizontal, 'y' for vertical
 
     const onDragStart = (clientX, clientY = 0) => {
+        // Do not declare dragging yet; wait for a clear horizontal intent
         cancelAnimationFrame(rafId);
-        isDragging = true;
+        isTouching = true;
         dragStartX = clientX;
         dragStartY = clientY;
         dragStartPos = position;
-        container.classList.add('dragging');
         gestureLocked = false;
         lockDirection = null;
     };
 
     const onDragMove = (clientX, clientY = 0, e = null) => {
-        if (!isDragging) return;
+        // Allow movement handling while touching (pre-drag) so we can lock direction
+        if (!isDragging && !isTouching) return;
         // Determine gesture direction once the movement exceeds threshold
         if (!gestureLocked && clientY !== 0) {
             const dx = Math.abs(clientX - dragStartX);
             const dy = Math.abs(clientY - dragStartY);
-            const threshold = 8; // px
-            if (dx > threshold || dy > threshold) {
-                lockDirection = dx > dy ? 'x' : 'y';
+            // Bias toward vertical: require horizontal movement to clearly dominate
+            const horizThreshold = 12; // px
+            const vertBias = 8;        // dx must exceed dy by this margin to lock X
+            if (dx > horizThreshold && dx > dy + vertBias) {
+                lockDirection = 'x';
                 gestureLocked = true;
+                // Begin horizontal drag only now
+                isDragging = true;
+                isPaused = true; // pause autoplay while dragging
+                container.classList.add('dragging');
+            } else if (dy > horizThreshold && dy >= dx) {
+                lockDirection = 'y';
+                gestureLocked = true;
+            } else {
+                // not enough info yet; do not prevent default
+                return;
             }
         }
         if (gestureLocked && lockDirection === 'y') {
             // Let the page scroll vertically; do not handle as carousel drag
             return;
         }
+        if (!isDragging) return; // guard
         // We are handling horizontal drag; prevent page scroll on touch devices
         if (e && e.cancelable) e.preventDefault();
         const delta = clientX - dragStartX; // dragging right -> positive delta
@@ -832,13 +847,16 @@ window.addEventListener('load', () => {
     };
 
     const onDragEnd = () => {
-        if (!isDragging) return;
-        isDragging = false;
-        container.classList.remove('dragging');
-        // Snap to nearest slide with a small easing
-        const index = getCurrentIndex();
-        snapToIndex(index, true);
-        rafId = requestAnimationFrame(loop);
+        if (isDragging) {
+            isDragging = false;
+            container.classList.remove('dragging');
+            // Snap to nearest slide with a small easing
+            const index = getCurrentIndex();
+            snapToIndex(index, true);
+            // Resume autoplay shortly after to avoid immediate conflict
+            setTimeout(() => { isPaused = false; startLoopIfNeeded(); }, 120);
+        }
+        isTouching = false;
     };
 
     // Mouse events
