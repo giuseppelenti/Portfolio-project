@@ -821,9 +821,13 @@ window.addEventListener('load', () => {
                 isDragging = true;
                 isPaused = true; // pause autoplay while dragging
                 container.classList.add('dragging');
+                // Disable native touch handling to avoid jank while dragging horizontally
+                try { container.style.touchAction = 'none'; } catch (_) {}
             } else if (dy > horizThreshold && dy >= dx) {
                 lockDirection = 'y';
                 gestureLocked = true;
+                // Keep vertical panning enabled for smooth page scroll
+                try { container.style.touchAction = 'pan-y'; } catch (_) {}
             } else {
                 // not enough info yet; do not prevent default
                 return;
@@ -856,6 +860,8 @@ window.addEventListener('load', () => {
             // Resume autoplay shortly after to avoid immediate conflict
             setTimeout(() => { isPaused = false; startLoopIfNeeded(); }, 120);
         }
+        // Restore vertical panning after touch ends
+        try { container.style.touchAction = 'pan-y'; } catch (_) {}
         isTouching = false;
     };
 
@@ -863,20 +869,34 @@ window.addEventListener('load', () => {
     container.addEventListener('mousedown', (e) => {
         e.preventDefault();
         onDragStart(e.clientX, e.clientY);
+        // For mouse, begin dragging immediately and lock to horizontal
+        isDragging = true;
+        isPaused = true;
+        gestureLocked = true;
+        lockDirection = 'x';
+        container.classList.add('dragging');
     });
     window.addEventListener('mousemove', (e) => onDragMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', onDragEnd);
 
-    // Touch events (non-passive to allow preventDefault during horizontal drag)
+    // Touch events: keep passive to avoid scroll jank; use touch-action switching
+    // Default to allow vertical panning over the carousel
+    try { container.style.touchAction = 'pan-y'; } catch (_) {}
     container.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
+        // Pause autoplay immediately on touch to avoid subtle horizontal motion during vertical scroll
+        isPaused = true;
         onDragStart(t.clientX, t.clientY);
-    }, { passive: false });
-    window.addEventListener('touchmove', (e) => {
+    }, { passive: true });
+    container.addEventListener('touchmove', (e) => {
         const t = e.touches[0];
-        onDragMove(t.clientX, t.clientY, e);
-    }, { passive: false });
-    window.addEventListener('touchend', onDragEnd, { passive: true });
+        onDragMove(t.clientX, t.clientY, null);
+    }, { passive: true });
+    window.addEventListener('touchend', () => {
+        onDragEnd();
+        // Resume autoplay a moment after touch ends if not dragging
+        setTimeout(() => { if (!isDragging) { isPaused = false; startLoopIfNeeded(); } }, 180);
+    }, { passive: true });
 
     // Pause on hover (robust across devices/components)
     const setPaused = (v) => {
