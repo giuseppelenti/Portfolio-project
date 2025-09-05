@@ -132,8 +132,8 @@
   }
 }
 
-/* Small devices: remove ALL hover effects within the projects section */
-@media (max-width: 768px) {
+/* Small devices & tablets: remove ALL hover effects within the projects section */
+@media (max-width: 1024px) {
   .projects-section *:hover,
   .projects-section *:hover::before,
   .projects-section *:hover::after {
