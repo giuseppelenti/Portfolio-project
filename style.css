@@ -1952,6 +1952,18 @@ body .project-detail:not(.open) { pointer-events: none !important; }
   object-fit: cover !important;
 }
 
+/* Ensure touch on media still scrolls vertically on mobile/tablet */
+.project-detail .detail-slide .split-right,
+.project-detail .process-step .step-media {
+  touch-action: pan-y; /* allow vertical panning to scroll */
+}
+.project-detail .detail-slide .split-right img,
+.project-detail .process-step .step-media img {
+  -webkit-user-drag: none; /* prevent native image drag */
+  user-select: none;
+  touch-action: pan-y;
+}
+
 /* =========================================================
    Design Process: alternating media/text steps within slides
    ========================================================= */

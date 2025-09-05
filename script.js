@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 scroller.style.overflowX = 'hidden';
                 scroller.tabIndex = -1;
                 try { scroller.focus({ preventScroll: true }); } catch(_) {}
+                // Ensure media inside overlay do not block vertical scroll on touch
+                ensureOverlayMediaScrollable();
             } else {
                 // Horizontal layout (legacy): align to left
                 target.scrollIntoView({ behavior: 'instant', inline: 'start', block: 'nearest' });
@@ -147,6 +149,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Project detail is vertical-only now: no custom drag/wheel handlers needed.
+    const ensureOverlayMediaScrollable = () => {
+        try {
+            const imgs = detail.querySelectorAll('.detail-slide img');
+            imgs.forEach(img => {
+                img.setAttribute('draggable', 'false');
+                img.style.webkitUserDrag = 'none';
+                img.style.userSelect = 'none';
+                img.style.touchAction = 'pan-y';
+            });
+            const mediaContainers = detail.querySelectorAll('.detail-slide .split-right, .process-step .step-media');
+            mediaContainers.forEach(el => { el.style.touchAction = 'pan-y'; });
+        } catch (_) { /* no-op */ }
+    };
     if (scroller) {
         const cs0 = window.getComputedStyle(scroller);
         const isVerticalDetail = cs0.overflowX === 'hidden' && cs0.overflowY !== 'hidden';
@@ -160,6 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
             scroller.parentNode.replaceChild(clone, scroller);
             scroller = clone;
             scroller.scrollTop = prevScrollTop;
+            // Reinforce media touch behavior after DOM replacement
+            ensureOverlayMediaScrollable();
 
             // Fallback: forward wheel/touch from overlay to scroller to guarantee vertical scroll
             const forwardWheel = (e) => {
