@@ -811,9 +811,9 @@ window.addEventListener('load', () => {
         if (!gestureLocked && clientY !== 0) {
             const dx = Math.abs(clientX - dragStartX);
             const dy = Math.abs(clientY - dragStartY);
-            // Bias toward vertical: require horizontal movement to clearly dominate
-            const horizThreshold = 12; // px
-            const vertBias = 8;        // dx must exceed dy by this margin to lock X
+            // Bias toward vertical but engage horizontal a bit sooner to avoid stutter
+            const horizThreshold = 8; // px (was 12)
+            const vertBias = 4;        // px (was 8)
             if (dx > horizThreshold && dx > dy + vertBias) {
                 lockDirection = 'x';
                 gestureLocked = true;
@@ -821,13 +821,9 @@ window.addEventListener('load', () => {
                 isDragging = true;
                 isPaused = true; // pause autoplay while dragging
                 container.classList.add('dragging');
-                // Disable native touch handling to avoid jank while dragging horizontally
-                try { container.style.touchAction = 'none'; } catch (_) {}
             } else if (dy > horizThreshold && dy >= dx) {
                 lockDirection = 'y';
                 gestureLocked = true;
-                // Keep vertical panning enabled for smooth page scroll
-                try { container.style.touchAction = 'pan-y'; } catch (_) {}
             } else {
                 // not enough info yet; do not prevent default
                 return;
@@ -879,8 +875,8 @@ window.addEventListener('load', () => {
     window.addEventListener('mousemove', (e) => onDragMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', onDragEnd);
 
-    // Touch events: keep passive to avoid scroll jank; use touch-action switching
-    // Default to allow vertical panning over the carousel
+    // Touch events: make touchmove non-passive so we can preventDefault when dragging horizontally
+    // Default to allow vertical panning over the carousel via touch-action: pan-y
     try { container.style.touchAction = 'pan-y'; } catch (_) {}
     container.addEventListener('touchstart', (e) => {
         const t = e.touches[0];
@@ -890,8 +886,8 @@ window.addEventListener('load', () => {
     }, { passive: true });
     container.addEventListener('touchmove', (e) => {
         const t = e.touches[0];
-        onDragMove(t.clientX, t.clientY, null);
-    }, { passive: true });
+        onDragMove(t.clientX, t.clientY, e);
+    }, { passive: false });
     window.addEventListener('touchend', () => {
         onDragEnd();
         // Resume autoplay a moment after touch ends if not dragging
