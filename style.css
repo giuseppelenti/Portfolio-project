@@ -110,6 +110,9 @@
   .project-topic-block:hover::after { opacity: 0 !important; }
   /* Carousel slide specific */
   .carousel-slide:hover { transform: none !important; box-shadow: none !important; }
+  /* Also disable all transitions on project-topic-blocks to avoid jank during touch drags */
+  .project-topic-block,
+  .project-topic-block * { transition: none !important; }
 }
 
 /* Home-only overrides to keep hero exactly the viewport height */

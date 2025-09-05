@@ -367,6 +367,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==============================
     const initTiltParallax = () => {
         if (prefersReduced) return;
+        // Skip on touch/coarse pointers to avoid jank during horizontal drags
+        let supportsHoverFine = false;
+        try { supportsHoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch(_) { supportsHoverFine = false; }
+        if (!supportsHoverFine) return;
         const cards = document.querySelectorAll('.project-topic-block');
         const maxTilt = 8; // degrees
         const imgParallax = 1.06; // scale factor for subtle zoom
