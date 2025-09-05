@@ -1,6 +1,8 @@
 /* Guarantee the section provides height context */
 .about-section { min-height: 100vh; }
 
+/* (Removed final overrides to restore original behavior) */
+
 /* =========================================================
    Timeline layout for resume lists
    ========================================================= */
@@ -319,6 +321,9 @@ body:not(.dark-mode) .about-section {
     border-top: 1px solid rgba(0,0,0,0.06);
     position: relative;
 }
+
+/* Spacing between the hero About (#about) and the following about-section */
+#about { margin-bottom: clamp(40px, 8vw, 120px); }
 body:not(.dark-mode) .about-section::before {
     content: "";
     position: absolute;
@@ -500,6 +505,15 @@ body {
     max-width: 100%;
     object-fit: contain;
     display: block;
+    /* Soft card-like styling for avatar with smoother edges */
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 18px;
+    padding: 10px; /* extra breathing room to hide hard cut */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    /* Feather the extreme corners slightly (supported in modern browsers) */
+    -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
+    mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
 }
 
 /* Restore original desktop hero look while keeping mobile tweaks */
@@ -1027,6 +1041,41 @@ body.dark-mode .about-half-light {
 .about-section .carousel-track,
 .about-section .carousel-slide { height: 100%; }
 
+/* Prevent clipping on medium desktops and apply requested layout */
+@media (min-width: 992px) and (max-width: 1440px) {
+  /* Let content dictate height and show overflow */
+  .about-section { min-height: auto; height: auto; overflow: visible; }
+  .about-section .container-fluid { height: auto; }
+  .about-section .row { min-height: auto; height: auto; overflow: visible; }
+  .about-section .row > [class^="col-"],
+  .about-section .row > [class*=" col-"] { height: auto; }
+  .about-section .about-content { height: auto; overflow: visible; }
+  .about-section .carousel-container { height: auto; min-height: 56vh; }
+  .about-section .carousel-track,
+  .about-section .carousel-slide { height: auto; }
+
+  /* Stack layout: text first (full width), stats centered, carousel last */
+  .about-section .row { display: flex !important; flex-direction: column !important; align-items: center !important; gap: clamp(16px, 3vh, 32px); }
+
+  /* Make both columns full-width, with explicit ordering */
+  .about-section .row > .col-12.col-lg-6 { width: 100% !important; max-width: 1200px; }
+  .about-section .row > .col-12.col-lg-6.order-1.order-lg-1 { order: 1 !important; }
+  .about-section .row > .col-12.col-lg-6.order-2.order-lg-2 { order: 3 !important; }
+
+  /* Text block stretches horizontally */
+  .about-section .about-caption { margin-left: auto; margin-right: auto; max-width: 1200px; text-align: left; }
+  .about-caption-1 { justify-content: center; text-align: center; }
+
+  /* Center stats grid and avatar logo */
+  .about-stats { justify-content: center; align-items: stretch; }
+  .about-stats-logo { justify-content: center; }
+  .about-stats .stat-item { max-width: 420px; }
+
+  /* Carousel moves to bottom and spans full width */
+  .about-section .about-content { margin-left: 0; }
+  .about-section .carousel-container { width: 100%; max-width: 1400px; }
+}
+
 /* Make .about-content stretch and host the carousel as flex child */
 .about-section .about-content {
     display: flex;
@@ -1042,6 +1091,14 @@ body.dark-mode .about-half-light {
     overflow: visible;
     -webkit-overflow-scrolling: auto;
     min-width: 0; /* allow flex child to shrink without causing horizontal scroll */
+}
+
+/* ===== Final fixes: prevent clipping of text/carousel on medium desktops ===== */
+@media (min-width: 992px) and (max-width: 1440px) {
+  .about-section .about-content { height: auto !important; overflow: visible !important; }
+  .about-section .row { height: auto !important; min-height: auto !important; overflow: visible !important; }
+  .about-section .row > [class^="col-"],
+  .about-section .row > [class*=" col-"] { height: auto !important; }
 }
 
 .about-section .carousel-container {
@@ -1286,6 +1343,22 @@ body.dark-mode .about-half-light {
     max-width: clamp(120px, 28vw, 220px);
     height: auto;
     object-fit: contain;
+    /* Match avatar card styling */
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
+    mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
+}
+
+/* Dark mode: coherent avatar styling */
+body.dark-mode .about-image img.img-fluid,
+body.dark-mode .about-stats-logo .stats-logo {
+  background: #151515;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.45);
 }
 
 /* Icona in alto per ogni card */
@@ -1356,50 +1429,41 @@ body.dark-mode .about-half-light {
 .about-stats.stats-variant-cartoon {
   gap: 22px;
 }
+/* Modern card style (clean, subtle, responsive) */
 .about-stats.stats-variant-cartoon .stat-item {
   position: relative;
-  background: #fff4bf; /* light default, adjusted in dark mode below */
-  border: 3px solid #1a1a1a;
-  border-radius: 18px;
-  box-shadow: 6px 6px 0 #1a1a1a;
-  transform: rotate(-0.4deg);
-  transition: transform 200ms ease, box-shadow 220ms ease, background 200ms ease;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transform: translateZ(0);
+  transition: transform 200ms cubic-bezier(.22,1,.36,1), box-shadow 220ms ease, border-color 200ms ease, background 200ms ease;
 }
-.about-stats.stats-variant-cartoon .stat-item::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  pointer-events: none;
-  background: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,0.05) 6px 12px);
-  opacity: 0.2;
-}
+.about-stats.stats-variant-cartoon .stat-item::after { display: none; }
 .about-stats.stats-variant-cartoon .stat-item:hover {
-  transform: translateY(-4px) rotate(0deg) skewX(-1deg);
-  box-shadow: 10px 12px 0 #1a1a1a;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.14);
 }
 .about-stats.stats-variant-cartoon .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #ffde59;
-  border: 3px solid #1a1a1a;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f2f4f7;
+  border: 1px solid rgba(0,0,0,0.08);
   color: #1a1a1a;
-  transform: rotate(-6deg);
-  transition: transform 220ms cubic-bezier(.22,1,.36,1), background 200ms ease;
+  transform: none;
+  transition: transform 200ms cubic-bezier(.22,1,.36,1), background 160ms ease, border-color 160ms ease;
 }
-.about-stats.stats-variant-cartoon .stat-item:hover .stat-icon {
-  transform: rotate(0deg) scale(1.05);
-}
+.about-stats.stats-variant-cartoon .stat-item:hover .stat-icon { transform: scale(1.05); }
 .about-stats.stats-variant-cartoon .stat-value {
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-shadow: 0 2px 0 rgba(0,0,0,0.15);
-  color: #1a1a1a;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #111;
+  text-shadow: none;
 }
 .about-stats.stats-variant-cartoon .stat-label {
-  color: #2b2b2b;
-  font-weight: 600;
+  color: #555;
+  font-weight: 500;
 }
 
 /* Small bounce on hover for the whole card */
@@ -1411,20 +1475,20 @@ body.dark-mode .about-half-light {
 
 /* Dark mode adaptation for cartoon variant */
 body.dark-mode .about-stats.stats-variant-cartoon .stat-item {
-  background: #2a2a2a;
-  border-color: #ffffff;
-  box-shadow: 6px 6px 0 #ffffff22;
+  background: #151515;
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
 }
 body.dark-mode .about-stats.stats-variant-cartoon .stat-item:hover {
-  box-shadow: 10px 12px 0 #ffffff22;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
 }
 body.dark-mode .about-stats.stats-variant-cartoon .stat-icon {
-  background: #ffb703;
-  border-color: #ffffff;
-  color: #121212;
+  background: #1f1f1f;
+  border-color: rgba(255,255,255,0.14);
+  color: #eee;
 }
-body.dark-mode .about-stats.stats-variant-cartoon .stat-value { color: #ffffff; text-shadow: 0 2px 0 rgba(0,0,0,0.35); }
-body.dark-mode .about-stats.stats-variant-cartoon .stat-label { color: rgba(255,255,255,0.9); }
+body.dark-mode .about-stats.stats-variant-cartoon .stat-value { color: #f5f5f5; }
+body.dark-mode .about-stats.stats-variant-cartoon .stat-label { color: #cfcfcf; }
 
 .about-caption-1 {
     padding: 0; /* align to columns without inner spacing */
@@ -1432,6 +1496,31 @@ body.dark-mode .about-stats.stats-variant-cartoon .stat-label { color: rgba(255,
     font-weight: 400;
     display: flex;
     justify-content: space-between;
+}
+
+/* Ensure the hero about-caption-1 spans the full container width */
+#about .about-caption-1 {
+  display: block;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  /* Align to the same left inset as the About title row */
+  text-align: left;
+  justify-content: flex-start;
+  padding-left: clamp(0rem, 6vw, 5rem);
+  padding-right: clamp(0rem, 3vw, 2rem);
+}
+
+/* Keep left alignment on smaller screens while reducing inset */
+@media (max-width: 992px) {
+  #about .about-caption-1 {
+    padding-left: clamp(12px, 5vw, 24px);
+    padding-right: clamp(12px, 5vw, 24px);
+    text-align: left;
+    justify-content: flex-start;
+  }
 }
 
 /* Ensure the column that contains about-caption has vertical breathing room */
@@ -1813,11 +1902,43 @@ body.dark-mode .main-nav {
 
 /* Mobile: carousel still fills the section; allow slightly shorter overall section if needed */
 @media (max-width: 768px) {
-  .about-section { min-height: 90vh !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  .about-section { min-height: 90vh !important; padding-top: 0 !important; padding-bottom: 0 !important; overflow: visible !important; }
   .about-section .container-fluid { min-height: 90vh !important; }
   .about-section .row { min-height: 90vh !important; padding-top: 0 !important; padding-bottom: 0 !important; align-items: stretch !important; }
   .about-section .carousel-container { height: 100% !important; min-height: 100% !important; }
+  .about-caption { padding-left: 12px; padding-right: 12px; }
+  /* Two cards per row, wrap, with inner padding to avoid edge clipping */
+  .about-stats { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; padding-left: 12px; padding-right: 12px; gap: 12px; }
+  .about-stats .stat-item { flex: 1 1 calc(50% - 12px); max-width: calc(50% - 12px); min-width: 160px; box-sizing: border-box; margin-bottom: 0; }
   .footer-cta { padding: 56px 6vw 72px; }
   .footer-illustration img { max-width: 180px; width: 55vw; }
   .footer-top { gap: 16px; flex-wrap: wrap; row-gap: 8px; }
+}
+
+/* Compact the stats cards to eliminate empty space on very small screens */
+@media (max-width: 420px) {
+  .about-stats { gap: 10px; }
+  .about-stats .stat-item { padding: 12px 14px; gap: 4px; box-shadow: 4px 4px 0 #1a1a1a; flex: 1 1 calc(50% - 10px); max-width: calc(50% - 10px); min-width: 150px; }
+  .about-stats .stat-icon { width: 36px; height: 36px; }
+  .about-stats .stat-value { font-size: clamp(1.4rem, 7vw, 1.8rem); }
+  .about-stats .stat-label { font-size: 0.9rem; }
+}
+@media (max-width: 360px) {
+  .about-stats .stat-item { padding: 10px 12px; min-width: 140px; }
+  .about-stats .stat-icon { width: 32px; height: 32px; }
+  .about-stats .stat-value { font-size: clamp(1.3rem, 7.8vw, 1.6rem); }
+  .about-stats .stat-label { font-size: 0.88rem; }
+}
+
+/* ===== FINAL OVERRIDES (wins cascade): 992–1440px prevent clipping ===== */
+@media (min-width: 992px) and (max-width: 1440px) {
+  .about-section { min-height: auto !important; height: auto !important; overflow: visible !important; }
+  .about-section .container-fluid { min-height: auto !important; height: auto !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  .about-section .row { min-height: auto !important; height: auto !important; align-items: stretch !important; overflow: visible !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+  .about-section .row > [class^="col-"],
+  .about-section .row > [class*=" col-"] { height: auto !important; display: block !important; }
+  .about-section .about-content { height: auto !important; display: block !important; overflow: visible !important; }
+  .about-section .carousel-container { height: auto !important; min-height: 56vh !important; }
+  .about-section .carousel-track,
+  .about-section .carousel-slide { height: auto !important; }
 }

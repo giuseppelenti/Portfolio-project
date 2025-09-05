@@ -1,6 +1,75 @@
+/* Animated CTA button (site-coherent card style) */
+.btn-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px; /* slightly larger for prominence */
+  border-radius: 14px; /* match site cards */
+  text-decoration: none;
+  color: #111;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08); /* subtle border like cards */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08); /* soft shadow like cards */
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  letter-spacing: 0.02em;
+  transition: transform 220ms cubic-bezier(.22,1,.36,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease, border-color 220ms ease;
+  will-change: transform, box-shadow;
+}
+.btn-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* full button */
+  border-radius: inherit;
+  background: radial-gradient(120% 120% at 10% 0%, rgba(255,255,255,0.6), rgba(255,255,255,0) 40%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  background: #111; /* site dark text color */
+  color: #fff;
+  border-color: rgba(0,0,0,0.25);
+}
+.btn-cta:hover::after { opacity: 0.25; }
+.btn-cta i { font-size: 1rem; transition: transform 220ms cubic-bezier(.22,1,.36,1), color 220ms ease; }
+.btn-cta:hover i { transform: translate(2px, -1px); }
+.btn-cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.12), 0 8px 22px rgba(0,0,0,0.16);
+}
+.btn-cta:active { transform: translateY(-1px); }
+
+/* Variant positioning in About */
+.about-cta { margin-top: 18px; display: inline-flex; }
+
+/* Dark mode variants */
+body.dark-mode .btn-cta {
+  background: #151515;
+  color: #f2f2f2;
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+body.dark-mode .btn-cta:hover {
+  background: #fff;
+  color: #111;
+  border-color: rgba(255,255,255,0.18);
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-cta,
+  .btn-cta i { transition: none !important; }
+}
 .main-content {
     flex: 1 0 auto; /* fill remaining space so footer can be pushed to bottom */
 }
+
+/* Smooth scroll for anchor links */
+html { scroll-behavior: smooth; }
+
+
 
 /* Hard override to win specificity and order against above blocks */
 @media (min-width: 992px) and (max-width: 1200px) {
@@ -33,6 +102,7 @@
    ========================================================= */
 .projects-section {
   overflow-x: clip; /* prevent section content from creating page-wide scroll */
+  margin-bottom: clamp(100px, 18vw, 260px); /* larger gap before info-section */
 }
 
 .projects-scroller {
@@ -78,6 +148,63 @@
 .project-topic-block .topic-info { padding: 10px 12px; }
 .project-topic-block .topic-title { margin: 6px 0 4px; font-size: 1.05rem; }
 .project-topic-block .topic-meta { margin: 0; opacity: 0.8; font-size: 0.95rem; }
+
+/* =========================================================
+   Skills slider (scoped to Info section)
+   ========================================================= */
+.info-section .skills-slider { 
+  overflow: hidden; 
+  padding: clamp(14px, 2.4vw, 22px) clamp(18px, 3vw, 28px);
+  background: #ffffff; /* card-like like about-section */
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px; /* same radius of cards */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  margin-top: clamp(120px, 22vw, 280px); /* push well below projects */
+  margin-bottom: clamp(6px, 1.2vw, 14px);
+}
+.info-section .skills-track {
+  display: flex; 
+  align-items: center;
+  gap: clamp(64px, 10vw, 140px); /* even larger spacing like reference */
+  width: max-content; 
+  will-change: transform; 
+  animation: skillsLoop 30s linear infinite;
+}
+.info-section .skill { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 12px; 
+  font-size: clamp(0.85rem, 1.8vw, 1rem); /* keep label small */
+  color: #222; 
+  opacity: 0.85;
+}
+.info-section .skill i { font-size: clamp(2rem, 5.6vw, 3.2rem); color: inherit; }
+.info-section .skill img {
+  height: clamp(56px, 8.5vw, 80px);
+  width: auto;
+  display: block;
+  filter: none; /* brand colors visible */
+  background: transparent; /* no individual badge */
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.info-section .skill span { display: none; }
+@keyframes skillsLoop { 
+  from { transform: translateX(0); } 
+  to { transform: translateX(-50%); } 
+}
+@media (hover: hover) and (pointer: fine) {
+  .info-section .skill:hover { opacity: 1; transform: translateY(-1px); }
+}
+body.dark-mode .info-section .skills-slider { background: #151515; border-color: rgba(255,255,255,0.14); box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+body.dark-mode .info-section .skill { color: #eaeaea; }
+/* dark badge for icons like stat-icon */
+body.dark-mode .info-section .skill img { background: #1f1f1f; border-color: rgba(255,255,255,0.14); box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
 
 /* =========================================================
    Footer CTA containment
@@ -1361,6 +1488,11 @@ body.dark-mode #mainNav {
 /* About header image: add more space on the right on desktop */
 /* About section spacing */
 #about { padding-top: clamp(40px, 8vw, 160px); }
+@media (min-width: 992px) {
+  #about .about-image > .col-lg-6:last-child {
+    padding-right: clamp(24px, 4vw, 72px);
+  }
+}
 @media (min-width: 992px) {
   #about .about-image > .col-lg-6:last-child {
     padding-right: clamp(24px, 4vw, 72px);

@@ -40,7 +40,7 @@
     <!-- Mobile side navigation -->
     <nav id="mainNav" aria-label="Mobile Navigation">
         <ul>
-            <li><a href="#works" class="nav-item"><span class="nav-number">01</span> Works</a></li>
+            <li><a href="#projects" class="nav-item"><span class="nav-number">01</span> Works</a></li>
             <li><a href="#about" class="nav-item"><span class="nav-number">02</span> About</a></li>
             <li><a href="#playground" class="nav-item"><span class="nav-number">03</span> Playground</a></li>
             <li><a href="#contact" class="nav-item"><span class="nav-number">04</span> Contact</a></li>
@@ -73,7 +73,7 @@
                     <!-- Navbar principale in orizzontale sotto i titoli -->
                     <nav class="hero-nav">
                         <ul class="d-flex flex-row justify-content-center align-items-center">
-                            <li><a href="#works" class="nav-item">
+                            <li><a href="#projects" class="nav-item">
                                 <span class="nav-number">01</span> Works
                             </a></li>
                             <li><a href="#about" class="nav-item">
@@ -170,6 +170,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Skills slider (continuous loop) inside info-section -->
         </section>
         
         <!-- Sezione About (unita da about.html) -->
@@ -188,14 +189,14 @@
                 <div class="row g-0 align-items-center">
                     <div class="col-12 giant-text">
                         <div class="about-caption-1 giant-text">
-                            <p class="lead"> In the game for over 6 years, I'm currently based in Ho Chi Minh city, working as an independent designer since July, 2022.</p>
+                            <p class="lead">Sono Giuseppe, italiano. Da 6+ anni curo UX/UI: creo interfacce chiare, accessibili e curate nei dettagli.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="about-section is-dark">
+        <section id="playground" class="about-section is-dark">
             <div class="container-fluid full-viewport">
                 <div class="row g-0 align-items-center">
                     <div class="col-12 col-lg-6 order-1 order-lg-1">
@@ -230,7 +231,7 @@
                             </div>
                             <!-- Disney loader image under stats -->
                             <div class="about-stats-logo">
-                                <img src="./img/videogame.png" alt="Disney loader logo" class="stats-logo" loading="lazy" decoding="async">
+                                <img src="./img/couch.png" alt="Disney loader logo" class="stats-logo" loading="lazy" decoding="async">
                             </div>
                         </div>
                     </div>
@@ -281,6 +282,37 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <!-- Skills slider row inside info-section container -->
+                <div class="row g-0 skills-row">
+                  <div class="col-12">
+                    <div class="skills-slider" aria-label="Skills carousel" role="region">
+                      <div class="skills-track">
+                        <!-- One set (exact requested skills only) -->
+                        <div class="skill"><img alt="Illustrator" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" /></div>
+                        <div class="skill"><img alt="Figma" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" /></div>
+                        <div class="skill"><img alt="Photoshop" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" /></div>
+                        <div class="skill"><img alt="HTML5" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" /></div>
+                        <div class="skill"><img alt="CSS3" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" /></div>
+                        <div class="skill"><img alt="JavaScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" /></div>
+                        <div class="skill"><img alt="Java" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" /></div>
+                        <div class="skill"><img alt="MySQL" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" /></div>
+                        <div class="skill"><img alt="Bootstrap" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" /></div>
+                        <div class="skill"><img alt="VSCode" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" /></div>
+                        <!-- Duplicate set for seamless loop -->
+                        <div class="skill"><img alt="Illustrator" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" /></div>
+                        <div class="skill"><img alt="Figma" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" /></div>
+                        <div class="skill"><img alt="Photoshop" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" /></div>
+                        <div class="skill"><img alt="HTML5" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" /></div>
+                        <div class="skill"><img alt="CSS3" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" /></div>
+                        <div class="skill"><img alt="JavaScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" /></div>
+                        <div class="skill"><img alt="Java" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" /></div>
+                        <div class="skill"><img alt="MySQL" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" /></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  </div>
                 </div>
             </div>
         </section>
@@ -412,7 +444,7 @@
     </span>
 </button>
 
-<section class="footer is-dark footer-cta">
+<section id="contact" class="footer is-dark footer-cta">
   <div class="container-fluid">
     <!-- Illustration -->
     <div class="footer-illustration">

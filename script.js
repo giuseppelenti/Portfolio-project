@@ -237,22 +237,43 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburgerMenu.setAttribute('aria-expanded', 'false');
     }
     // Control hamburger visibility: only show after exiting hero (or if open)
+    // Add hysteresis around hero bottom to avoid flicker near the boundary
+    let lastVisible = false;
     const isPastHero = () => {
         if (!heroSection) return window.scrollY > 60;
         const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-        return window.scrollY >= heroBottom - 1; // small buffer
-    };
-    const updateHamburgerVisibility = () => {
-        if (!hamburgerMenu) return;
-        const forceVisible = hamburgerMenu.classList.contains('open');
-        if (forceVisible || isPastHero()) {
-            hamburgerMenu.classList.add('visible');
+        // Use a 60px band to prevent rapid toggling
+        const lower = heroBottom - 60;
+        const upper = heroBottom + 60;
+        const y = window.scrollY;
+        if (lastVisible) {
+            // once visible, only hide when clearly above the lower band
+            return y > lower;
         } else {
-            hamburgerMenu.classList.remove('visible');
+            // once hidden, only show when clearly past the upper band
+            return y > upper;
         }
     };
+    const applyHamburgerVisibility = () => {
+        if (!hamburgerMenu) return;
+        const forceVisible = hamburgerMenu.classList.contains('open');
+        const shouldShow = forceVisible || isPastHero();
+        if (shouldShow !== lastVisible) {
+            lastVisible = shouldShow;
+            hamburgerMenu.classList.toggle('visible', shouldShow);
+        }
+    };
+    // Debounce scroll handler to reduce layout thrashing
+    let hvRaf = 0;
+    const updateHamburgerVisibility = () => {
+        if (hvRaf) return;
+        hvRaf = requestAnimationFrame(() => {
+            hvRaf = 0;
+            applyHamburgerVisibility();
+        });
+    };
     // init + listeners
-    updateHamburgerVisibility();
+    applyHamburgerVisibility();
     window.addEventListener('scroll', updateHamburgerVisibility, { passive: true });
     window.addEventListener('resize', updateHamburgerVisibility);
 
@@ -680,11 +701,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Only block horizontal wheel gestures; allow vertical to scroll the page
         projectsScroller.addEventListener('wheel', (e) => {
-            const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
-            if (isHorizontal) {
-                // Requirement: disable wheel/trackpad horizontal scrolling for the scroller
+            // Only treat as horizontal if horizontal intent is strong
+            const isStrongHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.6 || e.shiftKey;
+            if (isStrongHorizontal) {
+                // disable only clearly horizontal wheel scrolling for the scroller
                 e.preventDefault();
-            } // else: let vertical wheel bubble to page
+            } // else: let vertical wheel bubble to page unimpeded
         }, { passive: false });
     }
 });
