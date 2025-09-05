@@ -115,6 +115,23 @@
   .project-topic-block * { transition: none !important; }
 }
 
+/* Additionally disable hover effects on small viewports regardless of pointer type */
+@media (max-width: 768px) {
+  /* Neutralize hover states for project-topic blocks and media */
+  .project-topic-block:hover,
+  .project-topic-block:hover .topic-media,
+  .project-topic-block:hover .topic-image,
+  .topic-media:hover,
+  .topic-media:hover .topic-image,
+  .project-topic-block:hover::after {
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}
+
 /* Home-only overrides to keep hero exactly the viewport height */
 body.home { overflow-x: hidden; overflow-y: auto; padding-top: 0; }
 body.home .header { position: absolute; top: 0; left: 0; right: 0; padding: 30px 0; z-index: 2; }
