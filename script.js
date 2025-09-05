@@ -505,7 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let prevTouchAction = '';
         let dragDelta = 0; // track movement to detect taps
         let draggingHoriz = false; // direction lock
-        let activePointerId = null; // pointer capture id
+        let activePointerId = null; // current pointer id
+        let pointerCaptured = false; // whether we've called setPointerCapture
 
         const maxScroll = () => Math.max(0, projectsScroller.scrollWidth - projectsScroller.clientWidth);
         // Elastic resistance using tanh for smoothness
@@ -537,7 +538,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Lock to horizontal only if movement is mostly horizontal beyond threshold
                 if (Math.abs(dx) > Math.max(12, Math.abs(dy))) {
                     draggingHoriz = true;
+                    // Upon locking horizontally, capture the pointer and prevent native scroll
                     projectsScroller.style.touchAction = 'none';
+                    if (activePointerId !== null && !pointerCaptured) {
+                        try { projectsScroller.setPointerCapture(activePointerId); pointerCaptured = true; } catch(_) {}
+                    }
                 } else {
                     // Allow vertical scroll; do not prevent default
                     return;
@@ -565,6 +570,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Restore touch-action after drag completes
             projectsScroller.style.touchAction = prevTouchAction || 'pan-y';
             draggingHoriz = false;
+            // Release pointer capture only if we captured it
+            if (pointerCaptured && activePointerId !== null) {
+                try { projectsScroller.releasePointerCapture(activePointerId); } catch(_) {}
+            }
+            pointerCaptured = false;
             // If outside bounds, animate back to nearest bound
             const max = maxScroll();
             const cur = projectsScroller.scrollLeft;
@@ -598,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.button !== 0 && e.pointerType === 'mouse') return; // left button only
             // Do NOT preventDefault here, to preserve native click on child cards
             activePointerId = e.pointerId;
-            try { projectsScroller.setPointerCapture(activePointerId); } catch(_) {}
+            pointerCaptured = false; // will capture lazily upon horizontal lock
             onDown(e.clientX, e.clientY);
         });
         projectsScroller.addEventListener('pointermove', (e) => {
@@ -607,7 +617,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         const endPointer = (e) => {
             if (activePointerId === null || e.pointerId !== activePointerId) return;
-            try { projectsScroller.releasePointerCapture(activePointerId); } catch(_) {}
+            if (pointerCaptured) {
+                try { projectsScroller.releasePointerCapture(activePointerId); } catch(_) {}
+            }
             activePointerId = null;
             onUp();
             // If it was effectively a tap (no meaningful drag), open the card under pointer
@@ -645,11 +657,17 @@ document.addEventListener('DOMContentLoaded', function() {
         projectsScroller.addEventListener('pointercancel', endPointer);
         // Fallbacks in case some browsers drop capture unexpectedly
         projectsScroller.addEventListener('lostpointercapture', () => {
+            // Some browsers may drop capture unexpectedly; ensure state resets
+            pointerCaptured = false;
             activePointerId = null;
             onUp();
         });
         projectsScroller.addEventListener('pointerleave', (e) => {
             if (activePointerId !== null && e.pointerId === activePointerId) {
+                if (pointerCaptured) {
+                    try { projectsScroller.releasePointerCapture(activePointerId); } catch(_) {}
+                }
+                pointerCaptured = false;
                 activePointerId = null;
                 onUp();
             }
