@@ -898,7 +898,7 @@ window.addEventListener('load', () => {
         setTimeout(() => { if (!isDragging) { isPaused = false; startLoopIfNeeded(); } }, 180);
     }, { passive: true });
 
-    // Pause on hover (robust across devices/components)
+    // Pause on hover (desktop only)
     const setPaused = (v) => {
         isPaused = v;
         if (!v) {
@@ -908,26 +908,33 @@ window.addEventListener('load', () => {
             }
         }
     };
-    ['pointerenter'].forEach(evt => {
-        container.addEventListener(evt, () => setPaused(true));
-        track.addEventListener(evt, () => setPaused(true));
-    });
-    ['pointerleave'].forEach(evt => {
-        container.addEventListener(evt, () => { setPaused(false); startLoopIfNeeded(); });
-        track.addEventListener(evt, () => { setPaused(false); startLoopIfNeeded(); });
-    });
-    // Also pause when tab is unfocused, resume on focus
+    const supportsHover = (() => {
+        try { return window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (_){ return false; }
+    })();
+    if (supportsHover) {
+        ['pointerenter'].forEach(evt => {
+            container.addEventListener(evt, () => setPaused(true));
+            track.addEventListener(evt, () => setPaused(true));
+        });
+        ['pointerleave'].forEach(evt => {
+            container.addEventListener(evt, () => { setPaused(false); startLoopIfNeeded(); });
+            track.addEventListener(evt, () => { setPaused(false); startLoopIfNeeded(); });
+        });
+    }
+    // Also pause when tab is unfocused, resume on focus (applies universally)
     window.addEventListener('blur', () => setPaused(true));
     window.addEventListener('focus', () => { setPaused(false); startLoopIfNeeded(); });
 
-    // Fallback: hover polling in case some browsers/elements swallow pointerleave
-    const hoverPoll = setInterval(() => {
-        const hovered = container.matches(':hover');
-        if (!hovered && isPaused) {
-            setPaused(false);
-        }
-    }, 400);
-    window.addEventListener('beforeunload', () => clearInterval(hoverPoll));
+    // Fallback: hover polling only when hover is supported
+    if (supportsHover) {
+        const hoverPoll = setInterval(() => {
+            const hovered = container.matches(':hover');
+            if (!hovered && isPaused) {
+                setPaused(false);
+            }
+        }, 400);
+        window.addEventListener('beforeunload', () => clearInterval(hoverPoll));
+    }
 
     // Hook image load to reflow once at least one is loaded
     const imgs = track.querySelectorAll('img');
