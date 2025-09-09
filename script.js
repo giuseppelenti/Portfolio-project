@@ -20,6 +20,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const titleEl = detail.querySelector('.project-detail-title');
     let scroller = detail.querySelector('.project-detail-scroller');
     const getSlides = () => Array.from(scroller.querySelectorAll('.detail-slide'));
+    let lastFocusedBeforeOpen = null;
+    const pageContainers = [document.querySelector('header.header'), document.querySelector('main.main-content'), document.querySelector('footer')].filter(Boolean);
+    
+    const getFocusable = (root) => Array.from(root.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )).filter(el => el.offsetParent !== null || el === root);
+    
+    let removeTrap = null;
+    const trapFocus = (root) => {
+      const focusables = getFocusable(root);
+      if (focusables.length === 0) return () => {};
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const onKeydown = (e) => {
+        if (e.key !== 'Tab') return;
+        if (focusables.length === 1) { e.preventDefault(); first.focus(); return; }
+        if (e.shiftKey) {
+          if (document.activeElement === first || root === document.activeElement) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      };
+      root.addEventListener('keydown', onKeydown);
+      // Return cleanup
+      return () => root.removeEventListener('keydown', onKeydown);
+    };
 
     // Open overlay for a given topic name
     const openDetail = (topic) => {
@@ -28,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show modal
         detail.classList.add('open');
         detail.setAttribute('aria-hidden', 'false');
+        // Save last focused and hide background for AT
+        lastFocusedBeforeOpen = document.activeElement;
+        pageContainers.forEach(c => c.setAttribute('aria-hidden', 'true'));
         // Body no longer needs modal-open; overlay manages its own interactions
         // Jump to corresponding slide
         const slidesNow = getSlides();
@@ -47,6 +82,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 try { scroller.focus({ preventScroll: true }); } catch(_) {}
                 // Ensure media inside overlay do not block vertical scroll on touch
                 ensureOverlayMediaScrollable();
+                // Trap keyboard focus inside dialog
+                if (removeTrap) try { removeTrap(); } catch(_) {}
+                removeTrap = trapFocus(detail);
+                // Move focus to first focusable if scroller isn't interactive enough
+                const focusables = getFocusable(detail);
+                if (focusables.length) {
+                  try { focusables[0].focus({ preventScroll: true }); } catch(_) {}
+                }
             } else {
                 // Horizontal layout (legacy): align to left
                 target.scrollIntoView({ behavior: 'instant', inline: 'start', block: 'nearest' });
@@ -90,21 +133,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeDetail = () => {
         detail.classList.remove('open');
         detail.setAttribute('aria-hidden', 'true');
+        // Restore background visibility for AT
+        pageContainers.forEach(c => c.removeAttribute('aria-hidden'));
+        // Cleanup focus trap
+        if (removeTrap) { try { removeTrap(); } catch(_) {} removeTrap = null; }
+        // Restore focus to last focused element
+        try { lastFocusedBeforeOpen?.focus({ preventScroll: true }); } catch(_) {}
         // No modal-open class to remove; keep body free for interactions
     };
 
     // Bind open handlers on project topic blocks
     document.querySelectorAll('.projects-scroller .project-topic-block').forEach(card => {
         card.style.cursor = 'pointer';
+        const gotoIfLinked = () => {
+            const link = card.getAttribute('data-detail-link');
+            if (link) { window.location.href = link; return true; }
+            return false;
+        };
         card.addEventListener('click', () => {
+            if (gotoIfLinked()) return;
             const topic = (card.querySelector('.topic-title')?.textContent || '').trim();
             animateOpenFromCard(card, topic);
         });
-        // Enter key accessibility
+        // Enter/Space accessibility
         card.setAttribute('tabindex', '0');
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                if (gotoIfLinked()) return;
                 const topic = (card.querySelector('.topic-title')?.textContent || '').trim();
                 animateOpenFromCard(card, topic);
             }
@@ -515,9 +571,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Projects scroller: hold-and-drag horizontal scroll (no wheel/trackpad, no inertia)
+    // Projects scroller: hold-and-drag horizontal scroll (desktop only)
     const projectsScroller = document.querySelector('.projects-scroller');
-    if (projectsScroller) {
+    // Enable custom drag ONLY on devices with hover + fine pointer (desktop)
+    let enableCustomDrag = false;
+    try { enableCustomDrag = window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (_) { enableCustomDrag = false; }
+    if (projectsScroller && enableCustomDrag) {
         let isDown = false;
         let startX = 0;
         let startY = 0;

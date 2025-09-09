@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="home">
+    <a href="#mainContent" class="skip-link">Salta al contenuto</a>
     <!-- Social e contatti in alto a destra -->
     
     <!-- Loader iniziale con cursore personalizzato -->
@@ -32,7 +33,7 @@
         <div id="loading-cursor">Loading</div>
     </div>
     <!-- Hamburger menu per mobile -->
-    <div class="hamburger-menu" id="hamburgerMenu">
+    <div class="hamburger-menu" id="hamburgerMenu" role="button" aria-label="Toggle navigation" aria-expanded="false" tabindex="0">
         <span class="span-1"></span>
         <span class="span-2"></span>
         <span class="span-3"></span>
@@ -59,7 +60,7 @@
             </div>
         </div>
     </header>
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
         <!-- Sezione eroe con nome e ruolo -->
         <div class="hero-section container-fluid text-center">
             <!-- Topbar removed: loader now occupies top-left -->
@@ -319,35 +320,102 @@
     </main>
     
     <!-- Project Detail Fullscreen Overlay -->
-    <section id="project-detail" class="project-detail" aria-hidden="true" role="dialog" aria-modal="true">
+    <section id="project-detail" class="project-detail" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="projectDetailTitle">
         <button class="project-detail-close" aria-label="Close project detail">×</button>
         <div class="project-detail-header">
-            <h2 class="project-detail-title"></h2>
+            <h2 class="project-detail-title" id="projectDetailTitle"></h2>
             <p class="project-detail-subtitle">Scorri verticalmente per i dettagli</p>
         </div>
         <div class="project-detail-scroller" aria-label="Project detail scroller" role="region">
-            <!-- Split fullscreen slides: Left (copy), Right (image) -->
-            <article class="detail-slide split" data-topic="Accessibilità">
-                <div class="split-left hero">
-                    <a class="download-btn" href="./img/comicsd.jpg" download="Accessibilita-allegato.jpg" title="Scarica allegato" aria-label="Scarica allegato">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    </a>
-                    <div class="split-dot" aria-hidden="true"></div>
-                    <h2 class="hero-headline">SERIOUS.BUSINESS è un'agenzia che progetta esperienze accessibili. Connettiamo creatività e strategia per far funzionare (e piacere) i prodotti.</h2>
-                </div>
-                <div class="split-right">
-                    <img src="./img/comicsd.jpg" alt="Accessibilità - dettaglio" />
-                </div>
-                <section class="process-steps" aria-label="Fasi di progettazione">
-                    <div class="process-step">
-                        <div class="step-media">
-                            <img src="./img/comicsd.jpg" alt="Ricerca utenti e brief" />
+            <!-- Accessibility UX case study: full-width, sectioned layout -->
+            <article class="detail-slide" data-topic="Accessibilità">
+                <section class="case-wrap" aria-label="UX su Accessibilità">
+                    <!-- Overview / Hero -->
+                    <header class="case-hero">
+                        <div class="case-hero-media">
+                            <img src="./img/comicsd.jpg" alt="Hero progetto accessibilità" />
                         </div>
-                        <div class="step-content">
-                            <h3 class="step-title"><span class="step-index">01</span> Ricerca & Brief</h3>
-                            <p class="step-text">Analisi del problema, obiettivi, requisiti di accessibilità e benchmark. Interviste e raccolta insight dagli stakeholder.</p>
+                        <div class="case-hero-copy">
+                            <h2 class="case-title">Inclusive by design — UX per l’accessibilità</h2>
+                            <p class="case-lead">Progetto UX volto a migliorare la conformità WCAG e l’esperienza per persone con differenti abilità, mantenendo coerenza visiva e business goals.</p>
                         </div>
-                    </div>
+                    </header>
+
+                    <!-- Meta & Summary -->
+                    <section class="case-meta">
+                        <div class="meta-grid">
+                            <div class="meta-item"><h4>Scope</h4><p>Audit + Redesign</p></div>
+                            <div class="meta-item"><h4>Role</h4><p>UX/UI & Accessibility</p></div>
+                            <div class="meta-item"><h4>Standard</h4><p>WCAG 2.2 AA</p></div>
+                            <div class="meta-item"><h4>Tools</h4><p>Figma, Axe, Lighthouse</p></div>
+                        </div>
+                        <ul class="kpi-cards" aria-label="Key outcomes">
+                            <li><strong>-60%</strong><span>Errori contrasto</span></li>
+                            <li><strong>100%</strong><span>Navigabilità tastiera</span></li>
+                            <li><strong>+30%</strong><span>Task completion test</span></li>
+                        </ul>
+                    </section>
+
+                    <!-- Phase navigation -->
+                    <nav class="phase-nav" aria-label="Sommario fasi">
+                        <a href="#a11y-brief">Brief & Research</a>
+                        <a href="#a11y-audit">Accessibility Audit</a>
+                        <a href="#a11y-design">Design & Proto</a>
+                        <a href="#a11y-testing">Testing & Outcomes</a>
+                    </nav>
+
+                    <!-- 01 Brief & Research -->
+                    <section class="phase-section" id="a11y-brief">
+                        <div class="phase-aside"><h3 class="section-title">01 — Brief & Research</h3></div>
+                        <div class="phase-body">
+                            <p>Abbiamo definito obiettivi, utenti e principali barriere d’accesso. Analisi euristica e benchmark su prodotti inclusivi per capire pattern efficaci.</p>
+                            <div class="gallery">
+                                <figure><img src="./img/videogames.jpg" alt="Interviste e notes" /><figcaption>Interviste rapide e top task</figcaption></figure>
+                                <figure><img src="./img/81pck0VNp7L.jpg" alt="Benchmark" /><figcaption>Benchmark di interfacce inclusive</figcaption></figure>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 02 Accessibility Audit -->
+                    <section class="phase-section">
+                        <div class="phase-aside"><h3 class="section-title">02 — Accessibility Audit</h3></div>
+                        <div class="phase-body">
+                            <ul class="bullets">
+                                <li>Contrasto colori insufficiente su testo secondario e bottoni</li>
+                                <li>Gerarchia titoli non semantica (H jump)</li>
+                                <li>Focus state assenti o poco visibili</li>
+                                <li>Label ARIA mancanti su icone e input</li>
+                            </ul>
+                            <div class="gallery">
+                                <figure class="wide"><img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Report audit" /></figure>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 03 Design & Prototyping -->
+                    <section class="phase-section">
+                        <div class="phase-aside"><h3 class="section-title">03 — Design & Proto</h3></div>
+                        <div class="phase-body">
+                            <p>Abbiamo introdotto un design system accessibile: palette con contrasti AA, scala tipografica leggibile, componenti con ruoli semantici, stati focus e tap target adeguati.</p>
+                            <div class="gallery">
+                                <figure><img src="./img/comicsd.jpg" alt="Componenti con focus" /><figcaption>Focus ring e ruoli</figcaption></figure>
+                                <figure><img src="./img/videogames.jpg" alt="Moduli e label" /><figcaption>Form con label e hint</figcaption></figure>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 04 Testing & Outcomes -->
+                    <section class="phase-section">
+                        <div class="phase-aside"><h3 class="section-title">04 — Testing & Outcomes</h3></div>
+                        <div class="phase-body">
+                            <ul class="bullets">
+                                <li>Screen reader: migliorata la lettura delle aree principali e dei controlli</li>
+                                <li>Keyboard only: flusso completo senza mouse, con ordine focus logico</li>
+                                <li>Performance: riduzione elementi decorativi non essenziali</li>
+                            </ul>
+                            <p class="cta-row"><a class="primary-cta" href="#">View full project ↗</a></p>
+                        </div>
+                    </section>
                 </section>
             </article>
                     <article class="detail-slide split" data-topic="Prototyping">
@@ -371,6 +439,86 @@
                                     <p class="step-text">Definizione ipotesi testabili, criteri di successo e metrica di valutazione.</p>
                                 </div>
                             </div>
+                        </section>
+                    </article>
+                    <!-- UI Design detailed slide (Alternative Case Study Layout) -->
+                    <article class="detail-slide" data-topic="UI Design">
+                        <section class="case-wrap" aria-label="UI Design case study">
+                            <!-- Overview / Hero -->
+                            <header class="case-hero">
+                                <div class="case-hero-media">
+                                    <img src="./img/81pck0VNp7L.jpg" alt="3B Craft hero" />
+                                </div>
+                                <div class="case-hero-copy">
+                                    <h2 class="case-title">3B Craft — UI/UX Case study</h2>
+                                    <p class="case-lead">Redesign del sito per un brand nautico: da esperienza obsoleta a piattaforma moderna, accessibile e orientata alla conversione.</p>
+                                </div>
+                            </header>
+
+                            <!-- Meta & Summary -->
+                            <section class="case-meta">
+                                <div class="meta-grid">
+                                    <div class="meta-item"><h4>Client</h4><p>3B Craft</p></div>
+                                    <div class="meta-item"><h4>Role</h4><p>UX/UI Designer</p></div>
+                                    <div class="meta-item"><h4>Timeline</h4><p>8 settimane</p></div>
+                                    <div class="meta-item"><h4>Tools</h4><p>Figma, Illustrator</p></div>
+                                </div>
+                                <ul class="kpi-cards" aria-label="Key outcomes">
+                                    <li><strong>+38%</strong><span>Interazioni su CTA</span></li>
+                                    <li><strong>-25%</strong><span>Tempo per trovare i modelli</span></li>
+                                    <li><strong>AA</strong><span>Accessibilità contrasto</span></li>
+                                </ul>
+                            </section>
+
+                            <!-- Problem & Goals -->
+                            <section class="phase-section">
+                                <div class="phase-aside"><h3 class="section-title">01 — Overview</h3></div>
+                                <div class="phase-body">
+                                    <p>Il sito esistente risultava visivamente datato, con navigazione poco chiara e scarsa accessibilità. L’obiettivo è stato creare un’esperienza pulita, coerente con il brand, e ottimizzata per esplorare e confrontare i modelli d’imbarcazione.</p>
+                                    <ul class="bullets">
+                                        <li>Aggiornare la brand identity sul digitale</li>
+                                        <li>Ristrutturare IA, menu e sitemap</li>
+                                        <li>Definire personas e journey principali</li>
+                                        <li>Implementare confronto modelli e CTA chiare</li>
+                                    </ul>
+                                </div>
+                            </section>
+
+                            <!-- Research / IA -->
+                            <section class="phase-section">
+                                <div class="phase-aside"><h3 class="section-title">02 — Research & IA</h3></div>
+                                <div class="phase-body">
+                                    <p>Benchmark di competitor e interviste rapide per comprendere aspettative, linguaggio e priorità d’acquisto. Semplificata la gerarchia e creati percorsi di accesso diretto ai modelli.</p>
+                                    <div class="gallery">
+                                        <figure><img src="./img/comicsd.jpg" alt="Mappa contenuti e IA"/><figcaption>Content map e sitemap</figcaption></figure>
+                                        <figure><img src="./img/videogames.jpg" alt="Personas sintesi"/><figcaption>Personas e top task</figcaption></figure>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Wireframe / UI -->
+                            <section class="phase-section">
+                                <div class="phase-aside"><h3 class="section-title">03 — Wireframe & UI</h3></div>
+                                <div class="phase-body">
+                                    <p>Wireframe low → hi‑fi con focus su schede modello, filtri snelli e confronto specifiche. Design system tipografico e componenti riutilizzabili.</p>
+                                    <div class="gallery">
+                                        <figure class="wide"><img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="UI responsive"/></figure>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Testing / Results -->
+                            <section class="phase-section">
+                                <div class="phase-aside"><h3 class="section-title">04 — Testing & Results</h3></div>
+                                <div class="phase-body">
+                                    <ul class="bullets">
+                                        <li>Navigazione più prevedibile e rapida</li>
+                                        <li>Migliorata la leggibilità e il contrasto (AA)</li>
+                                        <li>Confronto modelli più chiaro → decisioni più informate</li>
+                                    </ul>
+                                    <p class="cta-row"><a class="primary-cta" href="#">View full project ↗</a></p>
+                                </div>
+                            </section>
                         </section>
                     </article>
                     <article class="detail-slide split" data-topic="Branding">

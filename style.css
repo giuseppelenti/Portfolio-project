@@ -17,6 +17,87 @@
   transition: transform 220ms cubic-bezier(.22,1,.36,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease, border-color 220ms ease;
   will-change: transform, box-shadow;
 }
+
+/* Skip to content link (visible on focus) */
+.skip-link {
+  position: absolute;
+  top: -1000px;
+  left: 0;
+  background: #fff;
+  color: #000;
+  padding: 10px 14px;
+  border: 2px solid #000;
+  border-radius: 6px;
+  z-index: 100000;
+}
+.skip-link:focus { top: 10px; left: 10px; outline: none; }
+
+/* Global focus-visible styles for interactive elements */
+a:focus-visible,
+button:focus-visible,
+.btn-cta:focus-visible,
+.nav-item:focus-visible,
+.project-topic-block:focus-visible,
+.topic-download:focus-visible,
+.primary-cta:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+/* Include hamburger and overlay controls */
+.hamburger-menu:focus-visible,
+.project-detail-close:focus-visible,
+.download-btn:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+/* Remove focus outlines when not keyboard-focused */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+.btn-cta:focus:not(:focus-visible),
+.nav-item:focus:not(:focus-visible),
+.project-topic-block:focus:not(:focus-visible),
+.topic-download:focus:not(:focus-visible),
+.primary-cta:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure minimum touch target sizes (WCAG 2.5.5 AAA advisable; we aim >=44px) */
+.nav-item,
+.btn-cta,
+.topic-download,
+.primary-cta {
+  min-height: 44px;
+  min-width: 44px;
+}
+/* Ensure hamburger meets target size */
+.hamburger-menu { min-width: 48px; min-height: 48px; }
+
+/* Underline links on focus-visible for clarity */
+a:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; }
+
+/* Respect reduced motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .info-section .skills-track { animation: none !important; }
+}
+
+/* Container-wide (not full-bleed) case study sections */
+.project-detail .case-wrap > * {
+  width: 100%;
+  max-width: 1200px; /* container width */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 3vw, 40px);
+  padding-right: clamp(16px, 3vw, 40px);
+  box-sizing: border-box;
+}
+.project-detail .case-wrap .gallery,
+.project-detail .case-wrap .case-meta,
+.project-detail .case-wrap .phase-nav { width: 100%; }
+
+/* Header inside project-detail uses normal container width */
+.project-detail-header { width: 100%; margin-left: 0; margin-right: 0; padding: 0 clamp(16px, 5vw, 80px); box-sizing: border-box; }
 .btn-cta::after {
   content: "";
   position: absolute;
@@ -102,7 +183,6 @@ html { scroll-behavior: smooth; }
    ========================================================= */
 .projects-section {
   overflow-x: clip; /* prevent section content from creating page-wide scroll */
-  margin-bottom: clamp(100px, 18vw, 260px); /* larger gap before info-section */
 }
 
 .projects-scroller {
@@ -123,6 +203,12 @@ html { scroll-behavior: smooth; }
 .projects-scroller::-webkit-scrollbar { height: 10px; }
 .projects-scroller::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 6px; }
 .projects-scroller::-webkit-scrollbar-track { background: transparent; }
+
+/* Mobile: allow native swipe and hide helper text */
+@media (max-width: 768px) {
+  .projects-scroller { touch-action: auto; -webkit-overflow-scrolling: touch; }
+  .projects-subtitle { display: none; }
+}
 
 .project-topic-block {
   flex: 0 0 auto;
@@ -203,8 +289,17 @@ html { scroll-behavior: smooth; }
 }
 body.dark-mode .info-section .skills-slider { background: #151515; border-color: rgba(255,255,255,0.14); box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
 body.dark-mode .info-section .skill { color: #eaeaea; }
-/* dark badge for icons like stat-icon */
-body.dark-mode .info-section .skill img { background: #1f1f1f; border-color: rgba(255,255,255,0.14); box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+/* High-contrast badge behind skill logos for dark mode */
+body.dark-mode .info-section .skill img {
+  background: #ffffff; /* light tile to maximize contrast */
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 6px; /* breathing room around the logo */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  filter: none; /* keep brand colors vivid on light background */
+}
+/* Focus color adapts in dark mode */
+body.dark-mode { --focus-ring: #88c0ff; }
 
 /* =========================================================
    Footer CTA containment
@@ -214,25 +309,165 @@ body.dark-mode .info-section .skill img { background: #1f1f1f; border-color: rgb
 .footer-illustration img { display: block; max-width: min(92vw, 520px); height: auto; }
 
 /* =========================================================
-   Project Detail overlay: constrain widths and clip overflow
+   Project Detail overlay: vertically scrolling presentation
    ========================================================= */
 #project-detail { overflow-x: clip; }
 .project-detail-scroller {
-  display: flex;
-  flex-direction: row;
-  gap: clamp(12px, 2.5vw, 28px);
-  overflow-x: auto;
-  overflow-y: hidden;
+  display: block; /* stack slides vertically */
+  overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x mandatory;
+  max-height: 100vh; /* keep header visible and content scrollable */
+  scroll-snap-type: y proximity;
+  padding: 0 0 clamp(42px, 6vh, 64px);
 }
-.detail-slide { flex: 0 0 auto; min-width: max(100vw, 1100px); scroll-snap-align: start; }
-.detail-slide.split { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
-.detail-slide .split-right img { display: block; max-width: 100%; height: auto; }
+
+/* Card-like slide container */
+.detail-slide {
+  scroll-snap-align: start;
+  width: 100%;
+  max-width: 1200px; /* center within container */
+  margin: 0 auto clamp(24px, 5vh, 56px);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Split hero inside each slide */
+.detail-slide.split {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(16px, 3vw, 48px);
+  align-items: center;
+  /* full width: no horizontal padding */
+  padding: clamp(16px, 2.5vh, 40px) 0;
+}
+.detail-slide .split-right img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Hero headline and kicker */
+.detail-slide .hero-headline {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 3.2vw, 34px);
+  line-height: 1.2;
+  margin: 0;
+}
+.detail-slide .hero-kicker {
+  font-size: clamp(14px, 1.4vw, 16px);
+  color: #555;
+  margin: 8px 0 0;
+}
+
+/* Process steps (Meta, Goals, Results) */
+.process-steps { padding: 0 0 clamp(20px, 3vw, 40px); }
+.process-step {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: start;
+  background: transparent; /* inherit overlay bg */
+  border: 0;
+  border-radius: 0;
+  padding: clamp(10px, 1.5vw, 16px) 0;
+}
+.process-step + .process-step { margin-top: clamp(12px, 2vw, 18px); }
+.process-step .step-media img { display: block; width: 100%; height: auto; border-radius: 0; }
+.process-step .step-title { font-size: clamp(16px, 1.8vw, 20px); margin: 0 0 6px; }
+.process-step .step-index {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; height: 24px; padding: 0 8px; margin-right: 6px;
+  font-size: 0.85em; line-height: 1; border-radius: 999px; background: #111; color: #fff;
+}
+.process-step .step-text { color: #333; }
+.process-step ul.step-text { margin: 0; }
+.process-step ul.step-text li { margin: 6px 0; }
 
 @media (max-width: 992px) {
-  .detail-slide { min-width: 100vw; }
-  .detail-slide.split { grid-template-columns: 1fr; }
+  .detail-slide.split { grid-template-columns: 1fr; padding: clamp(14px, 3.5vh, 24px) 0; }
+  .process-steps { padding: 0 0 clamp(18px, 4vw, 36px); }
+  .process-step { grid-template-columns: 1fr; gap: clamp(10px, 3vw, 18px); }
+}
+
+/* Dark mode variants for the overlay */
+body.dark-mode .detail-slide { background: transparent; border-color: transparent; box-shadow: none; }
+body.dark-mode .process-step { background: transparent; border-color: transparent; }
+body.dark-mode .process-step .step-text { color: #eaeaea; }
+body.dark-mode .detail-slide .hero-kicker { color: #c9c9c9; }
+
+/* =========================================================
+   Alternative Case Study Layout (UI Design slide)
+   ========================================================= */
+.case-wrap { padding: 0; }
+.case-hero { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: clamp(16px, 3vw, 48px); padding: clamp(16px, 4vh, 80px) 0; }
+.case-hero-media img { width: 100%; height: auto; border-radius: 8px; display: block; }
+.case-title { font-family: var(--font-heading); font-size: clamp(26px, 3.6vw, 44px); line-height: 1.15; margin: 0 0 10px; }
+.case-lead { font-size: clamp(16px, 1.6vw, 18px); opacity: .9; margin: 0; }
+
+.case-meta { padding: 0; margin-top: clamp(8px, 1.6vw, 16px); }
+.meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.8vw, 24px); }
+.meta-item { background: rgba(255,255,255,.75); border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 14px; }
+.meta-item h4 { font-size: 0.9rem; margin: 0 0 4px; opacity: .7; }
+.meta-item p { margin: 0; font-weight: 600; }
+
+.kpi-cards { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.8vw, 24px); padding: 0; margin: clamp(12px, 2vw, 24px) 0 0; }
+.kpi-cards li { background: #111; color: #fff; border-radius: 12px; padding: clamp(12px, 2vw, 18px); display: flex; align-items: center; gap: 12px; }
+.kpi-cards li strong { font-size: clamp(20px, 3vw, 28px); line-height: 1; }
+.kpi-cards li span { opacity: .9; }
+
+.phase-section { display: grid; grid-template-columns: 220px 1fr; gap: clamp(16px, 3vw, 48px); align-items: start; padding: clamp(20px, 4vh, 80px) 0; }
+.phase-aside { position: sticky; top: 0; align-self: start; }
+.section-title { font-size: clamp(14px, 1.4vw, 16px); letter-spacing: .04em; text-transform: uppercase; opacity: .7; margin: 0; }
+.phase-body { max-width: 100%; }
+.phase-body .bullets { padding-left: 18px; }
+
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(10px, 2vw, 20px); margin-top: 12px; }
+.gallery img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.gallery figcaption { font-size: .9rem; opacity: .75; margin-top: 6px; }
+
+.cta-row { margin-top: clamp(12px, 2vw, 20px); }
+
+/* Dark mode for case study blocks */
+body.dark-mode .meta-item { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+body.dark-mode .kpi-cards li { background: #fff; color: #111; }
+body.dark-mode .section-title { opacity: .85; }
+
+/* Phase navigation */
+.phase-nav {
+  display: flex;
+  gap: clamp(10px, 2vw, 22px);
+  flex-wrap: wrap;
+  padding: 0;
+  margin-top: clamp(8px, 1.5vw, 16px);
+}
+.phase-nav a {
+  text-decoration: none;
+  color: #111;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: .95rem;
+}
+.phase-nav a:hover { background: #111; color: #fff; border-color: #111; }
+body.dark-mode .phase-nav a { background: #151515; color: #f1f1f1; border-color: rgba(255,255,255,0.16); }
+body.dark-mode .phase-nav a:hover { background: #fff; color: #111; border-color: #fff; }
+
+/* Anchor offsets for sticky headers */
+.phase-section { scroll-margin-top: 72px; }
+
+@media (max-width: 992px) {
+  .case-hero { grid-template-columns: 1fr; }
+  .meta-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi-cards { grid-template-columns: 1fr; }
+  .phase-section { grid-template-columns: 1fr; }
+  .phase-aside { position: static; }
+  .gallery { grid-template-columns: 1fr; }
 }
 
 /* =========================================================
@@ -336,6 +571,7 @@ body.home .main-content { padding: 0; margin: 0; min-height: 0; }
     --font-heading: 'Playfair Display', sans-serif;
     --font-body: 'Poppins', sans-serif;
     --accent-color: #1a1a1a;
+    --focus-ring: #0a84ff; /* accessible focus color */
 }
 
 .jacques-francois-shadow-regular {
@@ -1937,49 +2173,22 @@ body.dark-mode .topic-meta { color: #c9c9c9; }
 .project-detail-close:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.22); }
 
 .project-detail-scroller {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(16px, 2vw, 24px);
+  /* normalized to container; legacy horizontal styles removed */
+  display: block;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 clamp(16px, 3vw, 36px) clamp(20px, 3vw, 36px);
-  scroll-snap-type: y mandatory;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  cursor: grab;
-  user-select: none;
-  touch-action: pan-y; /* keep vertical gestures neutral; JS handles horizontal */
-  overscroll-behavior: contain; /* avoid page scroll bounce while inside */
+  padding: 0 0 clamp(20px, 3vw, 36px);
+  scroll-snap-type: none;
 }
 .project-detail-scroller::-webkit-scrollbar { display: none; }
-.project-detail-scroller.dragging { cursor: grabbing; }
 
-.detail-slide {
-  /* Let slide grow beyond viewport to fit more content */
-  flex: 0 0 auto;
-  /* Full viewport width without causing page overflow */
-  min-width: max(100vw, 1100px);
-  scroll-snap-align: start;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: #f7f7f7;
-  display: grid;
-  grid-template-columns: 1fr;
-}
-@media (min-width: 992px) {
-  .detail-slide { grid-template-columns: 1.2fr 1fr; }
-}
-.detail-slide .slide-media img {
-  width: 100%;
-  height: min(48vh, 520px);
-  object-fit: cover;
+.detail-slide { /* container-centered version (defined above); keep here to override legacy */
+  flex: initial;
+  min-width: auto;
+  border: 0;
+  background: transparent;
   display: block;
-  -webkit-user-drag: none;
 }
-.detail-slide .slide-content { padding: clamp(16px, 3vw, 32px); }
-.detail-slide .slide-content h3 { margin: 0 0 8px; font-size: clamp(1.2rem, 3vw, 1.8rem); }
-.detail-slide .slide-content p { margin: 0; color: #444; font-size: clamp(0.95rem, 1.8vw, 1.1rem); }
 
   /* ==== Split fullscreen variant (left copy, right image) ==== */
   .detail-slide.split {

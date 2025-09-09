@@ -323,7 +323,6 @@ body:not(.dark-mode) .about-section {
 }
 
 /* Spacing between the hero About (#about) and the following about-section */
-#about { margin-bottom: clamp(40px, 8vw, 120px); }
 body:not(.dark-mode) .about-section::before {
     content: "";
     position: absolute;
@@ -500,7 +499,7 @@ body {
     max-width: 100%;
 }
 .about-image img.img-fluid {
-    height: calc(var(--aboutTitleSize) * 0.85); /* match title line-height visual height */
+    height: calc(var(--aboutTitleSize) * 1.85); /* match title line-height visual height */
     width: auto;
     max-width: 100%;
     object-fit: contain;
@@ -514,6 +513,7 @@ body {
     /* Feather the extreme corners slightly (supported in modern browsers) */
     -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
     mask-image: radial-gradient(120% 120% at 50% 50%, #000 94%, rgba(0,0,0,0) 100%);
+    margin-bottom: 2rem;
 }
 
 /* Restore original desktop hero look while keeping mobile tweaks */
@@ -1344,8 +1344,6 @@ body.dark-mode .about-half-light {
     height: auto;
     object-fit: contain;
     /* Match avatar card styling */
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.06);
     border-radius: 18px;
     padding: 10px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.10);
@@ -1909,7 +1907,7 @@ body.dark-mode .main-nav {
   .about-caption { padding-left: 12px; padding-right: 12px; }
   /* Two cards per row, wrap, with inner padding to avoid edge clipping */
   .about-stats { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; padding-left: 12px; padding-right: 12px; gap: 12px; }
-  .about-stats .stat-item { flex: 1 1 calc(50% - 12px); max-width: calc(50% - 12px); min-width: 160px; box-sizing: border-box; margin-bottom: 0; }
+  .about-stats .stat-item { flex: 1 1 100%; max-width: 100%; min-width: 260px; box-sizing: border-box; margin-bottom: 0; }
   .footer-cta { padding: 56px 6vw 72px; }
   .footer-illustration img { max-width: 180px; width: 55vw; }
   .footer-top { gap: 16px; flex-wrap: wrap; row-gap: 8px; }
@@ -1918,16 +1916,16 @@ body.dark-mode .main-nav {
 /* Compact the stats cards to eliminate empty space on very small screens */
 @media (max-width: 420px) {
   .about-stats { gap: 10px; }
-  .about-stats .stat-item { padding: 12px 14px; gap: 4px; box-shadow: 4px 4px 0 #1a1a1a; flex: 1 1 calc(50% - 10px); max-width: calc(50% - 10px); min-width: 150px; }
-  .about-stats .stat-icon { width: 36px; height: 36px; }
-  .about-stats .stat-value { font-size: clamp(1.4rem, 7vw, 1.8rem); }
-  .about-stats .stat-label { font-size: 0.9rem; }
+  .about-stats .stat-item { padding: 16px 18px; gap: 6px; box-shadow: 4px 4px 0 #1a1a1a; flex: 1 1 100%; max-width: 100%; min-width: 260px; }
+  .about-stats .stat-icon { width: 48px; height: 48px; }
+  .about-stats .stat-value { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .about-stats .stat-label { font-size: 1rem; }
 }
 @media (max-width: 360px) {
-  .about-stats .stat-item { padding: 10px 12px; min-width: 140px; }
-  .about-stats .stat-icon { width: 32px; height: 32px; }
-  .about-stats .stat-value { font-size: clamp(1.3rem, 7.8vw, 1.6rem); }
-  .about-stats .stat-label { font-size: 0.88rem; }
+  .about-stats .stat-item { padding: 16px 16px; min-width: 240px; }
+  .about-stats .stat-icon { width: 44px; height: 44px; }
+  .about-stats .stat-value { font-size: clamp(1.9rem, 9vw, 2.4rem); }
+  .about-stats .stat-label { font-size: 0.98rem; }
 }
 
 /* ===== FINAL OVERRIDES (wins cascade): 992–1440px prevent clipping ===== */
