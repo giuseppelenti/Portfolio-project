@@ -18,6 +18,12 @@
   will-change: transform, box-shadow;
 }
 
+/* Allow horizontal pan starting anywhere over the projects section */
+#projects { touch-action: pan-x pinch-zoom; }
+
+/* Ensure the info overlay inside cards doesn't block horizontal swipe */
+.project-topic-block .topic-info { touch-action: pan-x; }
+
 /* =========================================================
    Final heading scale normalizer (unifies titles across pages)
    ========================================================= */
@@ -487,12 +493,15 @@ html { scroll-behavior: smooth; }
   flex-wrap: nowrap;
   gap: clamp(12px, 3vw, 24px);
   padding: 0 clamp(16px, 4vw, 24px) clamp(24px, 5vw, 40px);
-  overflow-x: auto;
+  overflow-x: scroll; /* force scrollable on iOS */
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x; /* allow horizontal swipe */
   scroll-snap-type: x proximity; /* gentle snap between cards */
+  position: relative;
+  z-index: 3;            /* ensure it's above decorative overlays */
+  pointer-events: auto;  /* guarantee it receives touch events */
 }
 
 .projects-scroller::-webkit-scrollbar { height: 10px; }
@@ -513,14 +522,29 @@ html { scroll-behavior: smooth; }
 
 .project-topic-block {
   flex: 0 0 auto;
-  width: clamp(280px, 55vw, 640px); /* larger cards for bigger images */
+  width: min(86vw, 520px);
   scroll-snap-align: start;
-  border-radius: 12px;
+  touch-action: pan-x; /* ensure cards don't block horizontal pan */
+  pointer-events: auto; 
+  -webkit-user-drag: none; 
+  user-select: none; 
+  touch-action: pan-x; 
   overflow: hidden;
   background: #fff;
   border: 1px solid rgba(0,0,0,0.08);
 }
 
+.project-topic-block img,
+.project-topic-block a,
+.project-topic-block button { 
+  pointer-events: auto; 
+  -webkit-user-drag: none; 
+  user-select: none; 
+  touch-action: pan-x; 
+}
+
+.project-topic-block .topic-media { 
+  touch-action: pan-x; 
 .project-topic-block .topic-media img {
   display: block;
   width: 100%;
