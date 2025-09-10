@@ -1,16 +1,208 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ==============================
+    // i18n: simple client-side translator
+    // ==============================
+    const i18n = {
+        it: {
+            dark_toggle_title: 'Attiva/Disattiva tema scuro',
+            lang_toggle_title: 'Cambia lingua',
+            lang_toggle_label: 'EN',
+            scroll_top_title: 'Torna su',
+            detail_subtitle: 'Scorri verticalmente per i dettagli',
+            projects_subtitle: 'Tieni premuto e trascina →',
+            projects_title_left: 'Pro',
+            projects_title_right: 'getti',
+            topic_accessibility_title: 'Accessibilità',
+            topic_accessibility_meta: 'Analisi accessibilità di un sito web',
+            topic_wireframe1_title: 'Wireframing Parte 1',
+            topic_wireframe1_meta: 'Progettazione di 5 wireframing desktop',
+            topic_wireframe2_title: 'Wireframing Parte 2',
+            topic_wireframe2_meta: '5 wireframing mobile',
+            topic_discovery_title: 'Discovery UX',
+            topic_discovery_meta: 'Case study e user journey map di un sito web',
+            topic_graphics_title: 'Grafica',
+            topic_graphics_meta: 'Brand identity per app di meditazione',
+            topic_htmlcss_title: 'HTML & CSS',
+            topic_htmlcss_meta: 'Sviluppo di un sito web personale con HTML e CSS',
+            topic_copywriting_title: 'Copywriting',
+            topic_copywriting_meta: 'Stesura di un articolo, sviluppo del tema e persona di riferimento, analisi del target',
+            social_instagram: 'Instagram',
+            social_linkedin: 'LinkedIn',
+            social_behance: 'Behance',
+            topic_frontend_title: 'Front end',
+            topic_frontend_meta: 'HTML, CSS, JavaScript, performance',
+            topic_ui_title: 'UI Design',
+            topic_ui_meta: 'Design system, componenti, tipografia',
+            topic_prototype_title: 'Prototyping',
+            topic_prototype_meta: 'Figma, micro‑interazioni, user flow',
+            topic_brand_title: 'Branding',
+            topic_brand_meta: 'Logo, palette, composizione',
+            footer_eyebrow: "Non essere timido,",
+            footer_title: 'Scrivimi',
+            footer_cta: 'CONTATTAMI',
+            download_title: 'Scarica il progetto (PDF)',
+            download_sub: 'Versione completa dell’audit di accessibilità con evidenze e remediation plan.',
+            download_btn: 'Scarica PDF',
+            download_title_attr: 'Scarica il progetto in PDF',
+            download_image: 'Scarica allegato',
+            about_title_left: 'Ab',
+            about_title_right: 'out',
+            about_intro_lead: 'Sono Giuseppe, italiano. Da 6+ anni curo UX/UI: creo interfacce chiare, accessibili e curate nei dettagli.',
+            about_caption_aria: 'Informazioni personali',
+            about_hello: 'Ciao! Il mio nome è Giuseppe',
+            about_role: 'UX/UI Designer & Web Designer',
+            about_p1: 'Gioco con colori e idee da quando ero bambino, poi a 16 anni ho deciso di prenderla sul serio e mi sono buttato nel mondo del design. Da allora non ho più smesso di smanettare con web e UX/UI.',
+            about_p2: 'Amo il cinema e i videogiochi (spoiler: li analizzo come fossero progetti di design). Nei miei lavori cerco sempre di unire creatività e un pizzico di attenzione nerd ai dettagli.',
+            about_p3: 'Strumenti preferiti? Illustrator, Figma, Photoshop... ma anche HTML, CSS e JavaScript, perché le cose belle devono pure funzionare.',
+            about_stat_projects: 'progetti individuali',
+            about_stat_collab: 'collaborazioni',
+            about_stat_years: 'anni di esperienza',
+            about_intro_title: 'Web Design Frontend, Graphic Design, Prototyping, UI/UX Design, User test, Copywriting.',
+            about_direction_title: 'Direzione',
+            about_direction_text: 'Per me tutto parte dall’ascolto. Capire davvero il brief e le persone mi aiuta a definire obiettivi chiari, priorità e confini. Faccio ricerca, confronto competitor e pubblico e metto in ordine le idee per scegliere colori, tipografia e composizione con buon senso e coerenza.',
+            about_design_title: 'Design',
+            about_design_text: 'Quando la direzione è chiara, passo al fare: esploro varianti, prototipo e semplifico finché l’interfaccia non è pulita, accessibile e piacevole da usare. Cerco soluzioni pratiche, dettagli curati e un tocco di personalità.'
+            ,about_quote: '“Facciamo tutti delle scelte nella vita, ma alla fine sono le nostre scelte a fare noi.”'
+            ,about_quote_author: '— Andrew Ryan, BioShock'
+        },
+        en: {
+            dark_toggle_title: 'Toggle Dark Mode',
+            lang_toggle_title: 'Switch language',
+            lang_toggle_label: 'IT',
+            scroll_top_title: 'Scroll to Top',
+            detail_subtitle: 'Scroll vertically for details',
+            projects_subtitle: 'Hold and drag →',
+            projects_title_left: 'Pro',
+            projects_title_right: 'jects',
+            topic_accessibility_title: 'Accessibility',
+            topic_accessibility_meta: 'Accessibility analysis of a website',
+            topic_wireframe1_title: 'Wireframing Part 1',
+            topic_wireframe1_meta: 'Design of 5 desktop wireframes',
+            topic_wireframe2_title: 'Wireframing Part 2',
+            topic_wireframe2_meta: '5 mobile wireframes',
+            topic_discovery_title: 'UX Discovery',
+            topic_discovery_meta: 'Case study and user journey map of a website',
+            topic_graphics_title: 'Graphics',
+            topic_graphics_meta: 'Brand identity for a meditation app',
+            topic_htmlcss_title: 'HTML & CSS',
+            topic_htmlcss_meta: 'Building a personal website with HTML and CSS',
+            topic_copywriting_title: 'Copywriting',
+            topic_copywriting_meta: 'Article writing, theme and persona definition, target analysis',
+            social_instagram: 'Instagram',
+            social_linkedin: 'LinkedIn',
+            social_behance: 'Behance',
+            topic_frontend_title: 'Front end',
+            topic_frontend_meta: 'HTML, CSS, JavaScript, performance',
+            topic_ui_title: 'UI Design',
+            topic_ui_meta: 'Design system, components, typography',
+            topic_prototype_title: 'Prototyping',
+            topic_prototype_meta: 'Figma, micro‑interactions, user flow',
+            topic_brand_title: 'Branding',
+            topic_brand_meta: 'Logo, palette, composition',
+            footer_eyebrow: "Don't be shy,",
+            footer_title: 'Say Hello',
+            footer_cta: 'GET IN TOUCH',
+            download_title: 'Download the project (PDF)',
+            download_sub: 'Full accessibility audit with findings and remediation plan.',
+            download_btn: 'Download PDF',
+            download_title_attr: 'Download the project PDF',
+            download_image: 'Download attachment',
+            about_title_left: 'Ab',
+            about_title_right: 'out',
+            about_intro_lead: 'I’m Giuseppe, from Italy. For 6+ years I’ve crafted UX/UI: clear, accessible, detail‑oriented interfaces.',
+            about_caption_aria: 'Personal information',
+            about_hello: 'Hi! My name is Giuseppe',
+            about_role: 'UX/UI Designer & Web Designer',
+            about_p1: 'I’ve been playing with colors and ideas since I was a kid; at 16 I took it seriously and jumped into design. Since then I haven’t stopped exploring web and UX/UI.',
+            about_p2: 'I love cinema and video games (spoiler: I analyze them like design projects). In my work I blend creativity with a bit of nerdy attention to detail.',
+            about_p3: 'Favorite tools? Illustrator, Figma, Photoshop… and also HTML, CSS and JavaScript, because beautiful things should work too.',
+            about_stat_projects: 'individual projects',
+            about_stat_collab: 'collaborations',
+            about_stat_years: 'years of experience',
+            about_intro_title: 'Frontend Web Design, Graphic Design, Prototyping, UI/UX Design, User testing, Copywriting.',
+            about_direction_title: 'Direction',
+            about_direction_text: 'Everything starts with listening. Truly understanding the brief and the people helps me set clear goals, priorities and boundaries. I research, compare competitors and audience, and organize ideas to pick color, type and composition with common sense and consistency.',
+            about_design_title: 'Design',
+            about_design_text: 'Once the direction is set, I get hands‑on: explore variants, prototype and simplify until the interface is clean, accessible and enjoyable to use. I aim for practical solutions, neat details and a touch of personality.'
+            ,about_quote: '“We all make choices in life, but in the end our choices make us.”'
+            ,about_quote_author: '— Andrew Ryan, BioShock'
+        }
+    };
+
+    const getLang = () => {
+        const saved = localStorage.getItem('site_lang');
+        if (saved === 'it' || saved === 'en') return saved;
+        // default based on document or browser
+        const docLang = (document.documentElement.lang || '').slice(0,2).toLowerCase();
+        return (docLang === 'en') ? 'en' : 'it';
+    };
+
+    const setLang = (lang) => {
+        const dict = i18n[lang] || i18n.it;
+        document.documentElement.lang = lang;
+        // Text nodes
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (key && dict[key]) {
+                el.textContent = dict[key];
+            } else {
+                // Fallback: inline per-element translations
+                const inline = el.getAttribute(`data-i18n-${lang}`);
+                if (inline) el.textContent = inline;
+            }
+        });
+        // Attributes mapping: any attribute listed as data-i18n-attr-<attr>
+        document.querySelectorAll('[data-i18n-attr-title], [data-i18n-attr-aria-label]').forEach(el => {
+            if (el.hasAttribute('data-i18n-attr-title')) {
+                const key = el.getAttribute('data-i18n-attr-title');
+                if (key && dict[key]) {
+                    el.setAttribute('title', dict[key]);
+                } else {
+                    const inline = el.getAttribute(`data-i18n-attr-title-${lang}`);
+                    if (inline) el.setAttribute('title', inline);
+                }
+            }
+            if (el.hasAttribute('data-i18n-attr-aria-label')) {
+                const key2 = el.getAttribute('data-i18n-attr-aria-label');
+                if (key2 && dict[key2]) {
+                    el.setAttribute('aria-label', dict[key2]);
+                } else {
+                    const inline2 = el.getAttribute(`data-i18n-attr-aria-label-${lang}`);
+                    if (inline2) el.setAttribute('aria-label', inline2);
+                }
+            }
+        });
+        // Update language toggle label
+        const lbl = document.getElementById('langToggleLabel');
+        if (lbl) lbl.textContent = dict.lang_toggle_label;
+        localStorage.setItem('site_lang', lang);
+    };
+
+    // Init language and bind toggle
+    try { setLang(getLang()); } catch(_) {}
+    const langToggle = document.getElementById('langToggle');
+    if (langToggle) {
+        langToggle.addEventListener('click', () => {
+            const cur = getLang();
+            const next = cur === 'it' ? 'en' : 'it';
+            setLang(next);
+        });
+    }
     const isAboutPage = /about\.html(?:$|\?|#)/i.test(location.pathname);
-    // Dark mode toggle
+    // Dark mode: force always-on and disable toggle
     const toggleBtn = document.getElementById('darkModeToggle');
     const darkModeIcon = document.getElementById('darkModeIcon');
-    toggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        if(document.body.classList.contains('dark-mode')) {
-            darkModeIcon.innerHTML = '<i class="fa fa-sun"></i>';
-        } else {
-            darkModeIcon.innerHTML = '<i class="fa fa-moon"></i>';
+    const enforceDarkMode = () => {
+        document.body.classList.add('dark-mode');
+        if (darkModeIcon) darkModeIcon.innerHTML = '<i class="fa fa-sun"></i>';
+        if (toggleBtn) {
+            try { toggleBtn.setAttribute('aria-hidden', 'true'); } catch(_) {}
+            try { toggleBtn.setAttribute('tabindex', '-1'); } catch(_) {}
+            try { toggleBtn.disabled = true; } catch(_) {}
+            try { toggleBtn.style.display = 'none'; } catch(_) {}
         }
-    });
+    };
+    enforceDarkMode();
 
 // Project Detail overlay logic
 (function() {

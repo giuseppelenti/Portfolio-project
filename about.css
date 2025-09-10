@@ -1029,14 +1029,22 @@ body.dark-mode .about-half-light {
     min-height: 0; /* allow flex children to shrink within 100vh */
 }
 
+/* Safety: allow left column (with stats and logo) to show overflow */
+.about-section .row > .col-12.col-lg-6:first-child {
+    overflow: visible !important;
+    padding-bottom: 36px; /* more breathing room so bottom content isn't cut */
+}
+.about-section .row > .col-12.col-lg-6:first-child .about-caption { overflow: visible; }
+.about-section .row > .col-12.col-lg-6:first-child .about-stats-logo { overflow: visible; }
+
 /* Align items per default Bootstrap or existing layout */
 
 /* Carousel sizing without sticky parents */
-.about-section .container-fluid { height: 100%; }
-.about-section .row { min-height: 100vh; height: 100%; overflow: hidden; }
+.about-section .container-fluid { height: auto; overflow: visible !important; }
+.about-section .row { min-height: auto; height: auto; overflow: visible; }
 .about-section .row > [class^="col-"],
-.about-section .row > [class*=" col-"] { display: flex; height: 100%; }
-.about-section .about-content { height: 100%; display: flex; min-height: 0; overflow: hidden; }
+.about-section .row > [class*=" col-"] { display: flex; height: auto; }
+.about-section .about-content { height: auto; display: flex; min-height: 0; overflow: visible; }
 .about-section .carousel-container { height: 100%; min-height: 60vh; }
 .about-section .carousel-track,
 .about-section .carousel-slide { height: 100%; }
@@ -1354,8 +1362,6 @@ body.dark-mode .about-half-light {
 /* Dark mode: coherent avatar styling */
 body.dark-mode .about-image img.img-fluid,
 body.dark-mode .about-stats-logo .stats-logo {
-  background: #151515;
-  border-color: rgba(255,255,255,0.12);
   box-shadow: 0 10px 28px rgba(0,0,0,0.45);
 }
 
