@@ -17,6 +17,42 @@
   transition: transform 220ms cubic-bezier(.22,1,.36,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease, border-color 220ms ease;
   will-change: transform, box-shadow;
 }
+
+/* =========================================================
+   Final heading scale normalizer (unifies titles across pages)
+   ========================================================= */
+:root {
+  --display: clamp(4rem, 12vw, 16rem);
+  --h1: clamp(2.2rem, 6vw, 3.6rem);
+  --h2: clamp(1.8rem, 4.8vw, 2.6rem);
+  --h3: clamp(1.3rem, 3.2vw, 1.8rem);
+  --subtitle: clamp(1.05rem, 2.6vw, 1.25rem);
+}
+
+/* Hero display title */
+.hero-name {
+  font-size: var(--display) !important;
+  line-height: .9;
+  letter-spacing: -0.015em;
+}
+
+/* Primary section titles */
+.main-title,
+.footer-title { font-size: var(--h1) !important; line-height: 1.05; }
+
+/* Secondary titles and large captions */
+.subtitle,
+.info-title,
+.intro-title,
+.about-caption-1 { font-size: var(--h2) !important; line-height: 1.15; }
+
+/* Tertiary titles */
+.topic-title,
+.resume-title { font-size: var(--h3) !important; }
+
+/* Normalize quote styles moved from inline */
+.about-quote { margin: 6px 0 8px; font-style: italic; opacity: .9; }
+.about-quote cite { display:block; font-style: normal; opacity: .7; font-size: .95em; }
 .project-detail .a11y-analysis .case-wrap > * {
   max-width: 920px;
   margin-left: auto;
@@ -25,13 +61,55 @@
   padding-right: clamp(12px, 3vw, 24px);
 }
 
+/* Align About title spacing with Projects header */
+#about { padding-top: clamp(48px, 7vw, 90px); }
+#about .about-title-wrap { margin: clamp(24px, 4vw, 48px) 0; }
+
 /* Utility buttons (dark mode, scroll top, language) */
-/* Prevent overlap between dark mode toggle (#darkModeToggle) and language toggle (#langToggle) */
-#langToggle { right: 88px !important; }
-@media (max-width: 480px) {
-  /* Stack vertically on small screens */
-  #langToggle { top: 80px !important; right: 24px !important; }
+/* Shared styles */
+.btn-circle {
+  position: fixed;
+  z-index: 1000001;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
+.btn-rect {
+  position: fixed;
+  z-index: 1000001;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  background: #f4f4f4;
+  color: #111;
+  font-weight: 700;
+}
+
+/* Specific instances positioning */
+#darkModeToggle.btn-circle { top: 24px; right: 24px; background: #222; color: #fff; }
+#langToggle.btn-rect { top: 24px; right: 88px; }
+
+/* Prevent overlap on very small screens: stack language button below */
+@media (max-width: 480px) {
+  #langToggle.btn-rect { top: 80px; right: 24px; }
+}
+
+/* Scroll-to-top button global placement and visibility */
+#scrollTopBtn.btn-circle { bottom: 24px; right: 24px; z-index: 99999; background: #222; }
+#scrollTopBtn { opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(.77,0,.18,1), background 0.3s ease; }
+#scrollTopBtn.visible { opacity: 1; pointer-events: auto; }
 
 /* Scroll-to-top button: white arrow on dark button (override any lib rules) */
 #scrollTopBtn { color: #fff !important; }
@@ -206,6 +284,35 @@ button:focus-visible,
   }
 }
 
+/* =========================================================
+   Global reset & fluid media
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+img, picture, svg, video, canvas { display: block; max-width: 100%; height: auto; }
+/* Avoid stretched icons */
+svg { height: auto; }
+/* Balance text wrapping for better legibility */
+@supports (text-wrap: balance) {
+  h1, h2, h3, h4 { text-wrap: balance; }
+}
+
+/* Base typography scale */
+body {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.6;
+}
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.12; margin: 0 0 .4em; }
+h2 { font-size: clamp(1.8rem, 4.6vw, 2.6rem); line-height: 1.18; margin: 0 0 .5em; }
+h3 { font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.22; margin: 0 0 .5em; }
+p, li { font-size: clamp(1rem, 2.2vw, 1.1rem); }
+
+/* Tablet refinements */
+@media (min-width: 768px) and (max-width: 1200px) {
+  .info-section .skills-slider { margin-top: clamp(48px, 10vw, 120px); }
+  .projects-scroller { gap: clamp(12px, 3vw, 24px); }
+}
+
 /* Stagger the entry of analysis blocks for a pleasing cadence */
 .project-detail .a11y-analysis .analysis-block:nth-of-type(1) { animation-delay: 40ms; }
 .project-detail .a11y-analysis .analysis-block:nth-of-type(2) { animation-delay: 120ms; }
@@ -361,52 +468,31 @@ html { scroll-behavior: smooth; }
 
 
 
-/* Hard override to win specificity and order against above blocks */
+/* Keep simple nowrap behavior at >=992px; sizes are unified via CSS variables */
 @media (min-width: 992px) and (max-width: 1200px) {
-  .hero-name {
-    white-space: nowrap !important;
-    font-size: clamp(4.6rem, 7.4vw, 10.6rem) !important;
-    padding-left: 0 !important;
-    max-width: none !important;
-    letter-spacing: 0 !important;
-  }
+  .hero-name { white-space: nowrap !important; }
 }
 
 @media (min-width: 1200px) and (max-width: 1440px) {
-  .hero-name {
-    white-space: nowrap !important;
-    font-size: clamp(4.6rem, 7.8vw, 10.6rem) !important;
-    padding-left: 0 !important;
-    max-width: none !important;
-    width: auto !important;
-    letter-spacing: -0.02em !important;
-    overflow: visible !important;
-  }
-  .hero-name span { white-space: nowrap !important; display: inline; }
-  .hero-name .first-name { font-size: 0.88em; } /* slightly narrower to avoid wrap */
-  .hero-name .last-name { margin-left: .08em; }
+  .hero-name { white-space: nowrap !important; }
 }
 
 /* =========================================================
    Projects scroller containment
    ========================================================= */
-.projects-section {
-  overflow-x: clip; /* prevent section content from creating page-wide scroll */
-}
-
+.projects-section { overflow-x: clip; }
+/* Make the projects scroller swipeable on touch */
 .projects-scroller {
   display: flex;
-  flex-direction: row;
-  gap: clamp(12px, 3.5vw, 28px);
+  flex-wrap: nowrap;
+  gap: clamp(12px, 3vw, 24px);
+  padding: 0 clamp(16px, 4vw, 24px) clamp(24px, 5vw, 40px);
   overflow-x: auto;
   overflow-y: hidden;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x mandatory;
-  padding: 8px clamp(12px, 4vw, 32px);
-  box-sizing: border-box;
-  /* Allow vertical panning gestures to bubble and avoid scroll lock on mobile */
-  touch-action: pan-y;
-  overscroll-behavior-x: contain; /* contain horizontal rubber-banding */
+  touch-action: pan-x; /* allow horizontal swipe */
+  scroll-snap-type: x proximity; /* gentle snap between cards */
 }
 
 .projects-scroller::-webkit-scrollbar { height: 10px; }
@@ -586,7 +672,9 @@ body.dark-mode .info-section .skill img {
     "quote quote"; /* quote spans both columns so it doesn't push avatar away */
   justify-content: start; /* keep columns hugging the left, side-by-side */
   align-items: start; 
-  column-gap: 0; /* no gap between title and avatar */
+  column-gap: clamp(6px, 1.2vw, 12px); /* small gap between title and avatar */
+  /* Match Projects header spacing */
+  margin: 0 16px clamp(16px, 3vw, 28px);
 }
 #about .about-title-wrap .main-title { grid-area: title; margin: 0 0 4px; }
 #about .about-title-wrap .about-quote { grid-area: quote; margin: 4px 0 0 !important; }
@@ -605,15 +693,21 @@ body.dark-mode .info-section .skill img {
   grid-area: avatar;
   justify-self: start;
   align-self: start;
-  max-width: min(24vw, 200px);
+  max-width: min(16vw, 120px); /* reduced size */
   height: auto;
   /* Pull slightly into the title area to visually reduce the gap */
-  margin-left: clamp(-72px, -5vw, -24px);
-  margin-top: 6px;
+  margin-left: 0; /* align immediately to the right of title */
+  margin-top: 2px;
 }
 @media (max-width: 768px) {
+  /* Previous layout: stack, image below title, larger */
   #about .about-title-wrap { grid-template-columns: 1fr; }
-  #about .about-title-wrap .img-fluid { grid-column: 1; justify-self: start; max-width: min(60vw, 280px); }
+  #about .about-title-wrap .img-fluid {
+    grid-column: 1;
+    justify-self: start;
+    max-width: min(60vw, 280px);
+    margin-top: 0;
+  }
 }
 
 /* =========================================================
@@ -904,32 +998,12 @@ body.home .main-content { padding: 0; margin: 0; min-height: 0; }
 
 /* Keep the big title on one line on desktop; allow wrap on small screens */
 @media (min-width: 992px) {
-  .hero-name {
-    white-space: nowrap;
-    display: flex;
-    flex-wrap: nowrap;
-    max-width: 100vw;
-    padding-left: 0;
-    justify-content: center; /* center horizontally */
-    text-align: center;      /* center text baselines */
-    margin-left: auto;
-    margin-right: auto;
-  }
+  .hero-name { white-space: nowrap; }
   .hero-name span { white-space: nowrap; }
 }
 
 /* Keep hero title on a single line on mid/large desktops */
-@media (min-width: 992px) and (max-width: 1440px) {
-  .hero-name {
-    white-space: nowrap !important;
-    /* Even tighter size to guarantee single-line fit in 992–1440 */
-    font-size: clamp(4.6rem, 7.8vw, 10.6rem);
-    max-width: none;
-    padding-left: 0;
-    width: auto;
-    letter-spacing: -0.02em;
-  }
-}
+@media (min-width: 992px) and (max-width: 1440px) { /* sizes unified; keep only nowrap */ }
 
 /* Keep hero content in natural flow position (no vertical offset) */
 .hero-section > .row { transform: none; }
@@ -1013,11 +1087,7 @@ body {
     transform: translateX(-50%);
 }
 
-.main-title {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    font-weight: 500;
-}
+
 
 .subtitle {
     font-size: 4.9rem;
@@ -1190,33 +1260,7 @@ body {
 body.dark-mode #scrollTopBtn { background: #fff; color: #111; }
 body.dark-mode #scrollTopBtn:hover { background: #e9e9e9; }
 
-.hero-name {
-    font-family: var(--font-heading);
-    font-size: clamp(6rem, 13vw, 16rem); /* bigger, still fits on one line */
-    font-weight: 400;
-    line-height: 0.9;
-    text-transform: capitalize;
-    display: block; /* base: allow natural wrapping on small viewports */
-    text-align: center; /* always centered horizontally */
-    white-space: normal;
-    max-width: 92vw; /* keep some breathing room at small widths */
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative; /* for initials absolute positioning */
-    padding-left: 0; /* avoid pushing content outside on small screens */
-    box-sizing: border-box; /* include padding inside the max-width to avoid tiny overflow */
-}
-
-.initials {
-    font-size: 0.28em; /* small relative to huge name */
-    font-weight: 400;
-    line-height: 1;
-    position: absolute;
-    right: clamp(16px, 6vw, 80px);
-    top: -0.1em; /* slightly above baseline like reference */
-    margin: 0;
-}
+/* Legacy hero-name block removed; sizes handled by variable scale */
 
 /* =========================================================
    Navigation
@@ -1521,7 +1565,6 @@ body.dark-mode .main-title,
 body.dark-mode .subtitle,
 body.dark-mode .nav-item,
 body.dark-mode .hero-name,
-body.dark-mode .initials,
 body.dark-mode .social-icon{
     color: var(--text-color);
 }
@@ -1640,7 +1683,6 @@ body,
 .nav-item,
 .nav-number,
 .hero-name,
-.initials,
 .logo-container .social-icon,
 .logo-container .social-icon i {
     transition: color 0.5s cubic-bezier(.77,0,.18,1), background-color 0.5s cubic-bezier(.77,0,.18,1);
@@ -1690,16 +1732,15 @@ body.dark-mode button:hover {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-radius: 50%;
-    /* Chip style similar to Dark Mode toggle */
-    background: rgba(34,34,34,0.95);
-    border: 1px solid rgba(255,255,255,0.12);
+    /* Stilizzato come il toggle lingua (btn-rect) */
+    border-radius: 8px;
+    background: #f4f4f4;
+    border: 1px solid rgba(0,0,0,0.12);
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    backdrop-filter: blur(6px);
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     /* Default bar colors (assume light background unless classes applied) */
-    --bar-color: #fff; /* high contrast on dark chip */
+    --bar-color: #111; /* come il testo del toggle lingua */
     --bar-stroke: transparent;
     color: var(--bar-color);
     opacity: 0; /* hidden until past hero */
@@ -1782,11 +1823,17 @@ body.home #darkModeToggle {
 .hamburger-menu.open.on-dark span,
 .hamburger-menu.open.on-light span { background: var(--bar-color) !important; border-color: var(--bar-stroke) !important; }
 
-/* Hard enforce bar contrast by theme (guards against any stray overrides) */
-body:not(.dark-mode) .hamburger-menu span { background: #fff !important; border-color: transparent !important; }
-body:not(.dark-mode) .hamburger-menu.open span { background: #fff !important; border-color: transparent !important; }
+/* Hard enforce chip and bars in light mode to match language toggle */
+body:not(.dark-mode) .hamburger-menu {
+  background: #f4f4f4 !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 8px !important;
+}
+body:not(.dark-mode) .hamburger-menu span { background: #111 !important; border-color: transparent !important; }
+body:not(.dark-mode) .hamburger-menu.open span { background: #111 !important; border-color: transparent !important; }
 body.dark-mode .hamburger-menu span { background: #000 !important; border-color: transparent !important; }
 body.dark-mode .hamburger-menu.open span { background: #000 !important; border: 0 !important; }
+body.dark-mode .hamburger-menu { border-radius: 8px !important; }
 
 /* When menu is open, the side panel background is light; force black X for contrast */
 .hamburger-menu.open span { background: #000 !important; border-color: transparent !important; }
@@ -1954,13 +2001,7 @@ body.dark-mode #mainNav {
 /* =========================================================
    Responsive
    ========================================================= */
-@media (max-width: 1200px) {
-    .hero-name {
-        /* Keep reasonable size on medium desktops to prevent wrapping */
-        font-size: clamp(6rem, 11vw, 13rem);
-        white-space: nowrap;
-    }
-
+@media (max-width: 1200px) { /* sizes unified via variables */ }
   /* Project detail content blocks laid out horizontally across the wide slide */
   .split-details {
     display: grid;
@@ -2053,117 +2094,23 @@ body.dark-mode #mainNav {
   .detail-block.span-3 { grid-column: span 3; }
 }
 
-    .subtitle {
-        text-align: center;
-        font-size: clamp(1rem, 2vw, 1.3rem);
-    }
-
+/* Tablet and down */
 @media (max-width: 992px) {
-    /* Hide hero-nav on tablet/phone; show hamburger */
-    .hero-section .hero-nav { display: none !important; }
-    .hamburger-menu { display: flex; }
-    .header nav { display: none; }
-    /* Tablet portrait/landscape: allow wrap and keep it centered without overflow */
-    .hero-name {
-      font-size: clamp(3.6rem, 12.6vw, 8.8rem);
-      text-align: center;
-      white-space: normal;
-      max-width: 92vw;
-      width: auto;
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: 0;
-    }
-    .subtitle { text-align: center; font-size: clamp(1rem, 2vw, 1.3rem); }
-    /* Offset dark toggle so it doesn't overlap the hamburger on mobile */
-    #darkModeToggle { right: 84px !important; }
+  /* Hide hero-nav on tablet/phone; show hamburger */
+  .hero-section .hero-nav { display: none !important; }
+  .hamburger-menu { display: flex; }
+  .header nav { display: none; }
+  /* Allow wrap for large title */
+  .hero-name { white-space: normal; }
+  .social-icon { font-size: 1.2rem; }
 }
 
-/* Keep hero-nav on one line on medium desktops (992px–1200px) */
-@media (min-width: 992px) and (max-width: 1200px) {
-  .hero-section .hero-nav ul { gap: clamp(64px, 7.5vw, 140px); }
-  .hero-section .hero-nav a { font-size: clamp(0.85rem, 0.95vw, 1.05rem); padding: 8px 12px; }
-}
-
-/* Extra-wide spacing on large desktops */
-@media (min-width: 1200px) {
-  .hero-section .hero-nav ul { gap: clamp(100px, 10vw, 220px); }
-}
-
-/* If there are multiple ULs inside hero-nav, space them apart */
-@media (min-width: 992px) {
-  .hero-section .hero-nav ul + ul { margin-left: clamp(24px, 4vw, 56px); }
-}
-
-/* About header image: add more space on the right on desktop */
-/* About section spacing */
-#about { padding-top: clamp(40px, 8vw, 160px); }
-@media (min-width: 992px) {
-  #about .about-image > .col-lg-6:last-child {
-    padding-right: clamp(24px, 4vw, 72px);
-  }
-}
-@media (min-width: 992px) {
-  #about .about-image > .col-lg-6:last-child {
-    padding-right: clamp(24px, 4vw, 72px);
-  }
-}
-
-@media (max-width: 768px) {
-    html {
-        overflow-x: hidden;
-    }
-    .hero-name {
-        white-space: normal;
-        font-size: clamp(3rem, 14vw, 8rem);
-    }
-    .hero-name .initials { flex: 0 0 auto; }
-    .header {
-        padding: 20px 5%;
-    }
-    
-    .hero-name {
-        font-size: clamp(6rem, 15vw, 8rem);
-        margin: 20px 0;
-    }
-    
-    .subtitle {
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
-        margin-bottom: 30px;
-    }
-    
-    .logo-container {
-        gap: 15px;
-    }
-    
-    .social-icon {
-        font-size: 1.2rem;
-    }
-}
-
+/* Phones */
 @media (max-width: 576px) {
-    .hero-name {
-        font-size: clamp(4rem, 12vw, 6rem);
-    }
-    
-    .subtitle {
-        font-size: clamp(0.8rem, 2vw, 1rem);
-    }
-    
-    .hamburger-menu {
-        top: 20px;
-        right: 20px;
-        width: 40px;
-        height: 40px;
-    }
-    
-    .hamburger-menu span {
-        width: 24px;
-    }
-    
-    #mainNav {
-        width: 100%;
-    }
+  .subtitle { font-size: clamp(0.8rem, 2vw, 1rem); }
+  .hamburger-menu { top: 20px; right: 20px; width: 40px; height: 40px; }
+  .hamburger-menu span { width: 24px; }
+  #mainNav { width: 100%; }
 }
 
 /* =========================================================
@@ -2295,7 +2242,7 @@ body.dark-mode .project-category {
 
 .projects-title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(2.6rem, 7.5vw, 5.2rem); /* restored larger size */
   margin: 0;
 }
 
@@ -2978,6 +2925,18 @@ body.dark-mode .project-topic-block::after {
 }
 .hero-nav .nav-item:hover,
 .hero-nav .nav-item:focus-visible { text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .project-topic-block .topic-image { transition: none; }
+  .hero-nav .nav-item::after { transition: none; }
+}
+.hero-nav .nav-item:hover,
+.hero-nav .nav-item:focus-visible { text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .project-topic-block .topic-image { transition: none; }
+  .hero-nav .nav-item::after { transition: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .project-topic-block .topic-image { transition: none; }

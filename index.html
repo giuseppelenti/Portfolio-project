@@ -12,8 +12,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jacques+Francois+Shadow&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -209,11 +207,10 @@
                             <h1 class="main-title">
                                 <span class="about-half-dark" data-i18n="about_title_left">Ab</span><span class="about-half-light" data-i18n="about_title_right">out</span>
                             </h1>
-                            <blockquote class="about-quote" style="margin: 6px 0 8px; font-style: italic; opacity: .9;">
+                            <blockquote class="about-quote">
                                 <span data-i18n="about_quote">“We all make choices in life, but in the end our choices make us.”</span>
-                                <cite style="display:block; font-style: normal; opacity: .7; font-size: .95em;" data-i18n="about_quote_author">— Andrew Ryan, BioShock</cite>
+                                <cite data-i18n="about_quote_author">— Andrew Ryan, BioShock</cite>
                             </blockquote>
-                            <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="" class="img-fluid">
                         </div>
                     </div>
                 </div>
@@ -268,9 +265,9 @@
                         <div class="about-content">
                             <div class="carousel-container">
                                 <div class="carousel-track">
-                                    <div class="carousel-slide"><img src="./img/cinema.jpg" alt="Design workspace desk"></div>
-                                    <div class="carousel-slide"><img src="./img/videogames.jpg" alt="UX sticky notes planning"></div>
-                                    <div class="carousel-slide"><img src="./img/comicsd.jpg" alt="Frontend code and UI"></div>
+                                    <div class="carousel-slide"><img src="./img/cinema.jpg" alt="Design workspace desk" loading="lazy" decoding="async"></div>
+                                    <div class="carousel-slide"><img src="./img/videogames.jpg" alt="UX sticky notes planning" loading="lazy" decoding="async"></div>
+                                    <div class="carousel-slide"><img src="./img/comicsd.jpg" alt="Frontend code and UI" loading="lazy" decoding="async"></div>
                                 </div>
                             </div>
                         </div>
@@ -369,75 +366,25 @@
         </div>
     </section>
     <!-- Bottone per attivare/disattivare la dark mode con icona -->
-    <button data-i18n-attr-title="dark_toggle_title" title="Toggle Dark Mode" type="button" id="darkModeToggle" style="
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 1000001;
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 50%;
-    background: #222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    color:white;
-">
-    <span id="darkModeIcon">
-        <i class="fa fa-moon"></i>
-    </span>
-</button>
-<!-- Language toggle button -->
-<button data-i18n-attr-title="lang_toggle_title" title="Switch language" type="button" id="langToggle" style="
-    position: fixed;
-    top: 24px;
-    right: 88px;
-    z-index: 1000001;
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 8px;
-    background: #f4f4f4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    color:#111;
-    font-weight: 700;
-">
-  <span id="langToggleLabel" data-i18n="lang_toggle_label">EN</span>
-</button>
-<!-- Bottone per tornare su -->
-<button data-i18n-attr-title="scroll_top_title" title="Scroll to Top" id="scrollTopBtn" style="
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 99999;
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 50%;
-    background: #222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-">
-    <span>
-        <i class="fa fa-arrow-up"></i>
-    </span>
-</button>
+    <button data-i18n-attr-title="dark_toggle_title" title="Toggle Dark Mode" type="button" id="darkModeToggle" class="btn-circle">
+        <span id="darkModeIcon">
+            <i class="fa fa-moon"></i>
+        </span>
+    </button>
+    <!-- Language toggle button -->
+    <button data-i18n-attr-title="lang_toggle_title" title="Switch language" type="button" id="langToggle" class="btn-rect"><span id="langToggleLabel" data-i18n="lang_toggle_label">EN</span></button>
+    <!-- Bottone per tornare su -->
+    <button data-i18n-attr-title="scroll_top_title" title="Scroll to Top" id="scrollTopBtn" class="btn-circle">
+        <span>
+            <i class="fa fa-arrow-up"></i>
+        </span>
+    </button>
 
 <section id="contact" class="footer is-dark footer-cta">
   <div class="container-fluid">
     <!-- Illustration -->
     <div class="footer-illustration">
-      <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Illustration" />
+      <img src="./img/ChatGPT_Image_30_ago_2025__14_53_33-removebg-preview.png" alt="Illustration" loading="lazy" decoding="async" />
     </div>
     <!-- Headings -->
     <div class="footer-headings text-center">
@@ -455,87 +402,6 @@
     </div>
   </div>
 </section>
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Loader: ensure site is always interactive
-    document.body.classList.remove('loading');
-    const loadingCursor = document.getElementById('loading-cursor');
-    document.addEventListener('mousemove', function(e) {
-        if(document.body.classList.contains('loading')) {
-            loadingCursor.style.left = (e.clientX + 10) + 'px';
-            loadingCursor.style.top = (e.clientY + 10) + 'px';
-        }
-    });
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            document.getElementById('loader').classList.add('loader-bottom');
-            document.body.classList.remove('loading');
-        }, 400);
-    });
-
-    // Safety fallback: ensure loading state is cleared quickly regardless
-    setTimeout(function() {
-        const loader = document.getElementById('loader');
-        document.body.classList.remove('loading');
-        if (loader && !loader.classList.contains('loader-bottom')) {
-            loader.classList.add('loader-bottom');
-        }
-    }, 800);
-
-    // Navbar animazione lettere
-    document.querySelectorAll('.nav-item').forEach(item => {
-        const numberSpan = item.querySelector('.nav-number');
-        let text = item.childNodes[item.childNodes.length - 1].textContent.trim();
-        if (text) {
-            item.childNodes[item.childNodes.length - 1].textContent = '';
-            text.split('').forEach((char, i) => {
-                const span = document.createElement('span');
-                span.textContent = char;
-                span.classList.add('nav-animated');
-                span.style.animationDelay = `${i * 0.06}s`;
-                item.appendChild(span);
-            });
-        }
-    });
-
-    // Dark mode toggle handled in script.js to avoid duplicate listeners
-
-    // Scroll to top button
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 200) {
-            scrollTopBtn.classList.add('visible');
-        } else {
-            scrollTopBtn.classList.remove('visible');
-        }
-    });
-    scrollTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Hamburger menu handled in script.js (avoid duplicate listeners here)
-
-    // Animazione digitazione su first-name e last-name
-    function typeWriter(element, text, speed = 80) {
-        element.textContent = "";
-        let i = 0;
-        function typing() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i);
-                i++;
-                setTimeout(typing, speed);
-            }
-        }
-        typing();
-    }
-    const firstName = document.querySelector('.first-name');
-    const lastName = document.querySelector('.last-name');
-    typeWriter(firstName, "Giuseppe", 80);
-    setTimeout(() => {
-        typeWriter(lastName, "Lenti", 80);
-    }, 900);
-});
-    </script>
     <script src="script.js"></script>
     <!-- Bootstrap JS e dipendenze -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

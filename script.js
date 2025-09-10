@@ -188,7 +188,60 @@ document.addEventListener('DOMContentLoaded', function() {
             setLang(next);
         });
     }
-    const isAboutPage = /about\.html(?:$|\?|#)/i.test(location.pathname);
+    // cleaned: removed unused page detection
+
+    // ==============================
+    // Loader behavior (moved from inline script)
+    // ==============================
+    (function initLoader(){
+        const body = document.body;
+        const loader = document.getElementById('loader');
+        const loadingCursor = document.getElementById('loading-cursor');
+        try { body.classList.remove('loading'); } catch(_) {}
+        document.addEventListener('mousemove', function(e) {
+            if(!loadingCursor) return;
+            if(body.classList.contains('loading')) {
+                loadingCursor.style.left = (e.clientX + 10) + 'px';
+                loadingCursor.style.top = (e.clientY + 10) + 'px';
+            }
+        });
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (loader) loader.classList.add('loader-bottom');
+                body.classList.remove('loading');
+            }, 400);
+        });
+        // Safety fallback
+        setTimeout(function() {
+            body.classList.remove('loading');
+            if (loader && !loader.classList.contains('loader-bottom')) {
+                loader.classList.add('loader-bottom');
+            }
+        }, 800);
+    })();
+
+    // ==============================
+    // Typewriter effect for hero name (moved from inline script)
+    // ==============================
+    (function heroTypewriter(){
+        const firstName = document.querySelector('.first-name');
+        const lastName = document.querySelector('.last-name');
+        if (!firstName || !lastName) return;
+        function typeWriter(element, text, speed = 80) {
+            element.textContent = "";
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                }
+            }
+            typing();
+        }
+        typeWriter(firstName, "Giuseppe", 80);
+        setTimeout(() => typeWriter(lastName, "Lenti", 80), 900);
+    })();
     // Dark mode: force always-on and disable toggle
     const toggleBtn = document.getElementById('darkModeToggle');
     const darkModeIcon = document.getElementById('darkModeIcon');
@@ -206,6 +259,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Project Detail overlay logic
 (function() {
+    // Feature toggle: disable opening project detail pages on click
+    const ENABLE_PROJECT_DETAIL = false;
+    if (!ENABLE_PROJECT_DETAIL) { return; }
     const detail = document.getElementById('project-detail');
     if (!detail) return;
     const closeBtn = detail.querySelector('.project-detail-close');
@@ -452,8 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Force visible on load as a safety so you can see it immediately
-        scrollTopBtn.classList.add('visible');
+        // Visibility is handled by scroll threshold only
     }
 
     // moved tilt and magnetic hover below prefersReduced declaration

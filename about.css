@@ -377,7 +377,7 @@ body:not(.dark-mode) .about-section::before {
 .info-section {
   padding-top: clamp(36px, 6vw, 64px);
   padding-right: clamp(16px, 5vw, 56px);
-  padding-left: 0;
+  padding-left: clamp(16px, 5vw, 56px);
   padding-bottom: 0;
 }
 
@@ -1254,10 +1254,18 @@ body.dark-mode .about-half-light {
     .about-section .row > [class*=" col-"] { height: 100% !important; display: flex !important; }
     .about-section .about-content { height: 100% !important; display: flex !important; padding-top: 0 !important; padding-bottom: 0 !important; }
     .about-section .carousel-container {
-      height: 100% !important;   /* match about-section height */
-      min-height: 100% !important;
-      flex: 1 1 auto !important;
-    }
+  height: 100% !important;   /* match about-section height */
+  min-height: 100% !important;
+  flex: 1 1 auto !important;
+  /* Spazio uguale a destra e sinistra */
+  padding-left: clamp(16px, 3vw, 24px) !important;
+  padding-right: clamp(16px, 3vw, 24px) !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden; /* evita overflow orizzontale dei frame */
+}
     .about-section .carousel-track,
     .about-section .carousel-slide { height: 100% !important; }
     .about-section .carousel-slide img { height: 100% !important; width: 100% !important; object-fit: cover !important; display: block !important; }
@@ -1272,12 +1280,12 @@ body.dark-mode .about-half-light {
     background-attachment: scroll; /* disable background parallax */
     display: flex;
     align-items: flex-start !important;
-    justify-content: center !important;
+    justify-content: flex-start !important; /* allinea a sinistra */
     flex-direction: row;
     gap: 0; /* no horizontal gap between columns */
     margin: 0; /* remove side margins for full-bleed */
-    margin-bottom: clamp(2rem, 12vw, 20rem);
-    padding-left: clamp(0rem, 6vw, 5rem);
+    margin-bottom: 4rem;
+    padding-left: clamp(16px, 3vw, 24px); /* stesso padding sinistro del resto */
 }
 
 .about-caption {
@@ -1285,6 +1293,14 @@ body.dark-mode .about-half-light {
     font-size: clamp(1rem, 2.6vw, 1.625rem);
     /* Vertical spacing from sections above and below */
     margin: 48px 0;
+}
+
+/* Regola generale (fuori media) per coerenza su tutte le larghezze */
+.about-section .carousel-container {
+  padding-left: clamp(16px, 3vw, 24px);
+  padding-right: clamp(16px, 3vw, 24px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Base responsive headings used inside info blocks */
