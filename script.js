@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (loader && !loader.classList.contains('loader-bottom')) {
                 loader.classList.add('loader-bottom');
             }
-        }, 800);
+        }, 800); 
     })();
 
     // ==============================

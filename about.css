@@ -377,7 +377,7 @@ body:not(.dark-mode) .about-section::before {
 .info-section {
   padding-top: clamp(36px, 6vw, 64px);
   padding-right: clamp(16px, 5vw, 56px);
-  padding-left: clamp(16px, 5vw, 56px);
+  padding-left: clamp(16px, 5vw, 56px) ;
   padding-bottom: 0;
 }
 
