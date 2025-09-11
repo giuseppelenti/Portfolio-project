@@ -2096,7 +2096,7 @@ body.dark-mode #mainNav {
   }
   .detail-block.span-2 { grid-column: span 2; }
   .detail-block.span-3 { grid-column: span 3; }
-}
+
 
 /* Tablet and down */
 @media (max-width: 992px) {
