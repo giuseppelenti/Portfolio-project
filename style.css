@@ -98,6 +98,14 @@ body:not(.loading) #loading-cursor { display: none; }
 .intro-title,
 .about-caption-1 { font-size: var(--h2) !important; line-height: 1.15; }
 
+/* Make About caption (h2) larger than default secondary titles */
+.about-caption-1 { font-size: clamp(2.1rem, 6.4vw, 3.2rem) !important; }
+
+/* Mobile: ensure About caption remains prominent */
+@media (max-width: 576px) {
+  .about-caption-1 { font-size: clamp(2.6rem, 12vw, 3.8rem) !important; }
+}
+
 /* ===== Hero subtitle (UX/UI Designer) animated & interactive ===== */
 .subtitle.interactive {
   position: relative;
@@ -193,6 +201,19 @@ body.dark-mode .hero-avatar { border-color: rgba(255,255,255,0.92); }
 body.dark-mode .hero-avatar-dog { border-color: rgba(255,255,255,0.96); }
 @media (max-width: 480px) {
   .hero-avatar-dog { left: clamp(-32px, -8vw, -16px); bottom: clamp(-10px, -3vw, -6px); }
+}
+
+/* ===== Mobile-specific hero tweaks ===== */
+@media (max-width: 576px) {
+  /* Raise the avatar slightly higher in the hero */
+  .hero-avatar-wrap { transform: translateY(-64px); }
+  
+  /* Make the hero subtitle smaller on mobile */
+  .subtitle,
+  .subtitle.interactive { font-size: clamp(0.9rem, 3.8vw, 1.05rem) !important; }
+
+  /* Enlarge the main hero title on mobile for better hierarchy */
+  .hero-name { font-size: clamp(2.8rem, 12vw, 4.6rem) !important; }
 }
 
 /* Site header title 'PORTFOLIO®' smaller */

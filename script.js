@@ -186,6 +186,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const cur = getLang();
             const next = cur === 'it' ? 'en' : 'it';
             setLang(next);
+            // Re-apply keyword highlighting after i18n updates
+            setTimeout(() => {
+                try { highlightAboutKeywords(); } catch(_) {}
+            }, 0);
         });
     }
     // cleaned: removed unused page detection
@@ -235,6 +239,76 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         requestAnimationFrame(tick);
     })();
+
+    // ==============================
+    // About section: bold keywords
+    // ==============================
+    function highlightAboutKeywords() {
+        const scope = document.querySelector('section.about-section');
+        if (!scope) return;
+        // First, ensure no bolding inside lead
+        scope.querySelectorAll('.about-caption .lead').forEach(el => {
+            el.querySelectorAll('span.keyword').forEach(s => {
+                const parent = s.parentNode;
+                while (s.firstChild) parent.insertBefore(s.firstChild, s);
+                parent.removeChild(s);
+            });
+        });
+        const selectors = [
+            '.about-caption h2',
+            '.about-caption p:not(.lead)',
+            '.intro-title',
+            '.info-title',
+            '.info-text'
+        ];
+        const targets = scope.querySelectorAll(selectors.join(','));
+        const patterns = [
+            'UX\\s*/\\s*UI',
+            'UX',
+            'UI',
+            'Web\\s*Design',
+            'Web\\s*Designer',
+            'Prototyping',
+            'User\\s*test',
+            'Copywriting',
+            'Illustrator',
+            'Figma',
+            'Photoshop',
+            'HTML',
+            'CSS',
+            'JavaScript'
+        ];
+        const regex = new RegExp('(' + patterns.join('|') + ')', 'gi');
+        const walker = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.nodeValue;
+                if (!regex.test(text)) return;
+                // Reset regex lastIndex due to global flag
+                regex.lastIndex = 0;
+                const span = document.createElement('span');
+                span.innerHTML = text.replace(regex, '<span class="keyword">$1</span>');
+                node.parentNode.replaceChild(span, node);
+                return;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE && node.classList && !node.classList.contains('keyword')) {
+                // Skip script/style
+                const tag = node.tagName.toLowerCase();
+                if (tag === 'script' || tag === 'style') return;
+                Array.from(node.childNodes).forEach(walker);
+            }
+        };
+        targets.forEach(el => {
+            // Clean previous wraps: unwrap existing spans to avoid nesting
+            el.querySelectorAll('span.keyword').forEach(s => {
+                const parent = s.parentNode;
+                while (s.firstChild) parent.insertBefore(s.firstChild, s);
+                parent.removeChild(s);
+            });
+            walker(el);
+        });
+    }
+    // Run once on load
+    try { highlightAboutKeywords(); } catch(_) {}
 
     // ==============================
     // Typewriter effect for hero name (moved from inline script)
@@ -303,31 +377,85 @@ document.addEventListener('DOMContentLoaded', function() {
         try { isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches; } catch(_) { isCoarse = true; }
         if (!isCoarse) return;
 
+        // Improve touch handling for horizontal intent
+        scroller.style.touchAction = 'pan-x';
+        scroller.style.overscrollBehavior = 'contain';
+
         let isDown = false;
         let startX = 0;
         let startScroll = 0;
         let dragged = false;
+        // Momentum state
+        let vx = 0; // px/ms
+        let lastX = 0;
+        let lastT = 0;
+        let momentumRaf = 0;
+
+        const stopMomentum = () => { if (momentumRaf) { cancelAnimationFrame(momentumRaf); momentumRaf = 0; } };
 
         const onPointerDown = (e) => {
             if (e.pointerType === 'mouse') return; // mouse can scroll with wheel/trackpad
             isDown = true;
             dragged = false;
+            stopMomentum();
             startX = e.clientX;
             startScroll = scroller.scrollLeft;
+            lastX = startX;
+            lastT = performance.now();
+            vx = 0;
             try { scroller.setPointerCapture(e.pointerId); } catch(_) {}
         };
+
         const onPointerMove = (e) => {
             if (!isDown) return;
+            const now = performance.now();
+            const dxAbs = Math.abs(e.clientX - startX);
+            if (dxAbs > 3) dragged = true;
+            // Move scroller
             const dx = e.clientX - startX;
-            if (Math.abs(dx) > 3) dragged = true;
             scroller.scrollLeft = startScroll - dx;
+            // Compute velocity from last sample
+            const dt = Math.max(1, now - lastT); // ms, avoid division by 0
+            const instV = (e.clientX - lastX) / dt; // px/ms
+            // Low-pass filter for smoother velocity
+            vx = 0.8 * vx + 0.2 * instV;
+            lastX = e.clientX;
+            lastT = now;
             // prevent page vertical scroll from hijacking the gesture while dragging horizontally
             e.preventDefault();
         };
+
+        const startMomentum = () => {
+            // Apply decaying velocity until it stops or we hit bounds
+            const friction = 0.0025; // px/ms^2 approx
+            const maxLeft = 0;
+            const maxRight = scroller.scrollWidth - scroller.clientWidth;
+            let prev = performance.now();
+            const step = (now) => {
+                const dt = now - prev; prev = now;
+                // Update position
+                scroller.scrollLeft -= vx * dt; // minus because drag dx inverted
+                // Clamp and stop if at bounds
+                if (scroller.scrollLeft <= maxLeft && vx > 0) { scroller.scrollLeft = maxLeft; vx = 0; }
+                if (scroller.scrollLeft >= maxRight && vx < 0) { scroller.scrollLeft = maxRight; vx = 0; }
+                // Apply friction toward zero
+                const sign = Math.sign(vx);
+                const vmag = Math.max(0, Math.abs(vx) - friction * dt);
+                vx = vmag * sign;
+                if (vmag < 0.01) { momentumRaf = 0; return; }
+                momentumRaf = requestAnimationFrame(step);
+            };
+            if (Math.abs(vx) > 0.05) { momentumRaf = requestAnimationFrame(step); }
+        };
+
         const onPointerUp = (e) => {
+            if (!isDown) return;
             isDown = false;
             try { scroller.releasePointerCapture(e.pointerId); } catch(_) {}
+            // Start momentum only if user dragged
+            if (dragged) startMomentum();
         };
+
         scroller.addEventListener('pointerdown', onPointerDown, { passive: true });
         scroller.addEventListener('pointermove', onPointerMove, { passive: false });
         scroller.addEventListener('pointerup', onPointerUp, { passive: true });

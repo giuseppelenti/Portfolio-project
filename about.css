@@ -765,6 +765,9 @@ body.dark-mode .about-section::before {
     overflow: hidden;
 }
 
+/* Bold highlight for keywords inside About section */
+.about-section .keyword { font-weight: 700; }
+
 .about-caption{
     width: 100%;
 }
@@ -944,21 +947,15 @@ body.dark-mode .about-section::before {
 }
 
 @media (max-width: 576px) {
-    .about-caption h2 {
-        font-size: inherit;
-    }
-    .about-caption-1 {
-        font-size: 28px;
-    }
-    .intro-title {
-        font-size: 1.8rem;
-    }
-    .info-title {
-        font-size: 1.3rem;
-    }
-    .info-text {
-        font-size: 0.9rem;
-    }
+  /* Override: keep About hello H2 big on mobile */
+  .about-caption h2 {
+    font-size: clamp(2.6rem, 12vw, 4rem) !important;
+    line-height: 1.05;
+  }
+  .about-caption-1 { font-size: 28px; }
+  .intro-title { font-size: 1.8rem; }
+  .info-title { font-size: 1.3rem; }
+  .info-text { font-size: 0.9rem; }
 }
 
 .main-title {
