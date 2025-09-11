@@ -27,13 +27,65 @@
   --h2: clamp(1.8rem, 4.8vw, 2.6rem);
   --h3: clamp(1.3rem, 3.2vw, 1.8rem);
   --subtitle: clamp(1.05rem, 2.6vw, 1.25rem);
+  /* Hero avatar crop focus (tweak these to nudge the image inside the circle) */
+  --avatar-x: 50%;
+  --avatar-y: 1%;
+}
+
+/* ===== Fullscreen Loader Overlay ===== */
+body.loading { cursor: none; }
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000002;
+  background: #0f0f0f; /* dark backdrop */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 420ms ease;
+}
+#loader.is-hidden { opacity: 0; pointer-events: none; }
+#loader .loader-logo img { display:block; width: clamp(64px, 10vw, 120px); height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,.35)); }
+
+/* Cursor replacement text */
+#loading-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #f2f2f2;
+  background: transparent;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+body:not(.loading) #loading-cursor { display: none; }
+
+/* Percent indicator */
+#loading-progress {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 
 /* Hero display title */
 .hero-name {
-  font-size: var(--display) !important;
+  /* further reduced scale for a more compact hero title */
+  font-size: clamp(2.2rem, 7.5vw, 9rem) !important;
   line-height: .9;
   letter-spacing: -0.015em;
+}
+/* Make last name use the same font as section titles (About/Projects) */
+.hero-name .last-name {
+  font-family: var(--font-heading);
+  font-weight: 400;
 }
 
 /* Primary section titles */
@@ -45,6 +97,150 @@
 .info-title,
 .intro-title,
 .about-caption-1 { font-size: var(--h2) !important; line-height: 1.15; }
+
+/* ===== Hero subtitle (UX/UI Designer) animated & interactive ===== */
+.subtitle.interactive {
+  position: relative;
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #fff, #ffd166, #ff8a00, #ffe29a, #fff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientFlow 6s linear infinite;
+  cursor: pointer; /* indicates interactivity */
+}
+
+.subtitle.interactive::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.12;
+  transition: opacity .25s ease, transform .25s ease;
+  transform: scaleX(.5);
+  transform-origin: center;
+}
+.subtitle.interactive:hover::after { opacity: .35; transform: scaleX(1); }
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Subtle glow on hover */
+.subtitle.interactive:hover { filter: drop-shadow(0 4px 14px rgba(255, 138, 0, .25)); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .subtitle.interactive { animation: none; }
+}
+
+/* ===== Hero layout adjustments (home) ===== */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.hero-section .row { width: 100%; }
+
+/* Hero avatar above the title */
+.hero-avatar-wrap {
+  position: relative;
+  display: inline-block;
+}
+.hero-avatar {
+  width: clamp(96px, 18vw, 160px);
+  height: clamp(96px, 18vw, 160px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: var(--avatar-x) var(--avatar-y);
+  border: 3px solid rgba(255,255,255,0.9);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+  display: block;
+  margin-inline: auto;
+  margin-bottom: clamp(12px, 3vw, 20px);
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 300ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms ease;
+  z-index: 2;
+}
+body.dark-mode .hero-avatar { border-color: rgba(255,255,255,0.92); }
+@media (hover: hover) and (pointer: fine) {
+  .hero-avatar:hover { transform: scale(1.03); box-shadow: 0 14px 48px rgba(0,0,0,0.32); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-avatar { transition: box-shadow 180ms ease; }
+}
+
+/* Smaller dog avatar: offset to the side and slightly lower */
+.hero-avatar-dog {
+  position: absolute;
+  bottom: clamp(-12px, -2vw, -6px);
+  left: clamp(-48px, -6vw, -24px);
+  width: clamp(56px, 9vw, 96px);
+  height: clamp(56px, 9vw, 96px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.92);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+  background: #fff;
+  z-index: 3; /* above main avatar border */
+}
+body.dark-mode .hero-avatar-dog { border-color: rgba(255,255,255,0.96); }
+@media (max-width: 480px) {
+  .hero-avatar-dog { left: clamp(-32px, -8vw, -16px); bottom: clamp(-10px, -3vw, -6px); }
+}
+
+/* Site header title 'PORTFOLIO®' smaller */
+.header .main-title {
+  font-size: clamp(0.9rem, 1.6vw, 1.2rem) !important;
+  letter-spacing: 0.12em;
+}
+
+/* Enlarge only the hero navbar items */
+.hero-nav .nav-item {
+  font-size: clamp(1.1rem, 2.6vw, 1.35rem) !important;
+}
+.hero-nav {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.hero-nav ul {
+  gap: clamp(24px, 6vw, 96px) !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-inline: auto;
+  list-style: none;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  align-items: center;
+}
+.hero-nav ul li { margin: 0; }
+
+/* Extra-large desktops: constrain width and distribute evenly */
+@media (min-width: 1440px) {
+  .hero-nav ul {
+    width: fit-content;
+    margin-inline: auto;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: clamp(72px, 10vw, 180px) !important;
+  }
+}
+@media (min-width: 1920px) {
+  .hero-nav ul {
+    width: fit-content;
+    justify-content: center;
+    gap: clamp(96px, 12vw, 220px) !important;
+  }
+}
 
 /* Tertiary titles */
 .topic-title,
@@ -98,12 +294,11 @@
 }
 
 /* Specific instances positioning */
-#darkModeToggle.btn-circle { top: 24px; right: 24px; background: #222; color: #fff; }
-#langToggle.btn-rect { top: 24px; right: 88px; }
+#langToggle.btn-rect { top: 24px; right: 84px; }
 
 /* Prevent overlap on very small screens: stack language button below */
 @media (max-width: 480px) {
-  #langToggle.btn-rect { top: 80px; right: 24px; }
+  #langToggle.btn-rect { top: 24px; right: 84px; }
 }
 
 /* Scroll-to-top button global placement and visibility */
@@ -111,11 +306,11 @@
 #scrollTopBtn { opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(.77,0,.18,1), background 0.3s ease; }
 #scrollTopBtn.visible { opacity: 1; pointer-events: auto; }
 
-/* Scroll-to-top button: white arrow on dark button (override any lib rules) */
-#scrollTopBtn { color: #fff !important; }
-#scrollTopBtn *,
-#scrollTopBtn i { color: #fff !important; }
-#scrollTopBtn svg { fill: #fff !important; stroke: #fff !important; }
+/* Dark mode: white button, dark icon */
+body.dark-mode #scrollTopBtn { background: #fff; }
+body.dark-mode #scrollTopBtn i,
+body.dark-mode #scrollTopBtn * { color: #181818 !important; }
+body.dark-mode #scrollTopBtn svg { fill: #181818 !important; stroke: #181818 !important; }
 
 /* Skip to content link (visible on focus) */
 .skip-link {
@@ -669,7 +864,8 @@ body.dark-mode .info-section .skill img {
 /* Arrange About title area: title + quote on the left, avatar on the right */
 #about .about-title-wrap { 
   display: grid; 
-  grid-template-columns: max-content max-content; 
+  /* Make the title column flexible so long quotes wrap within viewport */
+  grid-template-columns: 1fr max-content; 
   grid-template-rows: auto auto; 
   grid-template-areas:
     "title avatar"
@@ -687,6 +883,10 @@ body.dark-mode .info-section .skill img {
   line-height: 1.12;
   font-weight: 600;
   margin-top: 10px !important;
+  /* Ensure the quote wraps instead of overflowing on desktop */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 #about .about-title-wrap .about-quote cite {
   font-size: clamp(1rem, 1.8vw, 1.2rem) !important;
@@ -1212,7 +1412,7 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: clamp(88px, 9vw, 200px); /* much larger spacing */
+    gap: clamp(88px, 30vw, 200px); /* much larger spacing */
     flex-wrap: nowrap; /* keep on one line */
     padding: 0;
     margin: 0;
@@ -1730,7 +1930,7 @@ body.dark-mode button:hover {
     right: 24px; /* posizione originale a destra */
     width: 48px;  /* dimensione originale */
     height: 48px; /* dimensione originale */
-    z-index: 100001; /* above darkModeToggle (99999) */
+    z-index: 1000003; /* above loader after fade and above language toggle */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1747,15 +1947,10 @@ body.dark-mode button:hover {
     --bar-color: #111; /* come il testo del toggle lingua */
     --bar-stroke: transparent;
     color: var(--bar-color);
-    opacity: 0; /* hidden until past hero */
+    opacity: 0; /* hidden until allowed */
     pointer-events: none;
     transform: translateY(-6px);
     transition: opacity 260ms ease, transform 260ms ease;
-}
-
-/* Home page: offset Dark Mode toggle so it doesn't overlap the hamburger */
-body.home #darkModeToggle {
-  right: 84px !important;
 }
 
 .hamburger-menu span {
@@ -1827,14 +2022,6 @@ body.home #darkModeToggle {
 .hamburger-menu.open.on-dark span,
 .hamburger-menu.open.on-light span { background: var(--bar-color) !important; border-color: var(--bar-stroke) !important; }
 
-/* Hard enforce chip and bars in light mode to match language toggle */
-body:not(.dark-mode) .hamburger-menu {
-  background: #f4f4f4 !important;
-  border: 1px solid rgba(0,0,0,0.12) !important;
-  border-radius: 8px !important;
-}
-body:not(.dark-mode) .hamburger-menu span { background: #111 !important; border-color: transparent !important; }
-body:not(.dark-mode) .hamburger-menu.open span { background: #111 !important; border-color: transparent !important; }
 body.dark-mode .hamburger-menu span { background: #000 !important; border-color: transparent !important; }
 body.dark-mode .hamburger-menu.open span { background: #000 !important; border: 0 !important; }
 body.dark-mode .hamburger-menu { border-radius: 8px !important; }
@@ -1859,8 +2046,6 @@ body.dark-mode .hamburger-menu { border-radius: 8px !important; }
     pointer-events: auto;  /* ensure clickable on small devices */
     transform: translateY(0);
   }
-  /* Move dark mode button down to avoid overlapping the hamburger */
-  #darkModeToggle { top: 72px; }
 }
 
 /* Contrast inversion in dark mode: chip becomes light, bars dark */
@@ -1908,25 +2093,6 @@ body.dark-mode .hamburger-menu {
   .hamburger-menu span { animation: none !important; transition: background-color 0.2s, border-color 0.2s; }
 }
 
-/* Dark mode toggle spin on hover/focus */
-#darkModeIcon { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-#darkModeIcon .fa-moon,
-#darkModeIcon .fa-sun {
-  display: inline-block;
-  transition: transform 420ms ease-in-out, color 200ms linear;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-@media (hover: hover) and (pointer: fine) {
-  #darkModeIcon:hover .fa-moon,
-  #darkModeIcon:hover .fa-sun { transform: rotate(360deg); }
-}
-#darkModeIcon:focus-visible .fa-moon,
-#darkModeIcon:focus-visible .fa-sun { transform: rotate(360deg); outline: 2px solid #ffcc00; outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) {
-  #darkModeIcon .fa-moon,
-  #darkModeIcon .fa-sun { transition: color 200ms linear; transform: none !important; }
-}
 
 /* =========================================================
    Final safeguards (override any stray rules)

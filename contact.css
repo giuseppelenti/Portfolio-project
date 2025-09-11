@@ -168,7 +168,6 @@ body.dark-mode .tag { background: rgba(255,255,255,.06); border-color: #444; }
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12);
 }
-#darkModeToggle.btn-circle { background: #222; color: #fff; }
 #scrollTopBtn.btn-circle {
   position: fixed; bottom: clamp(16px, 3vw, 24px); right: clamp(16px, 3vw, 24px);
 }

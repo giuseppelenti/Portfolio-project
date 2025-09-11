@@ -348,8 +348,7 @@ body:not(.dark-mode) .about-section::before {
   position: fixed !important; /* ensure it follows scrolling */
 }
 
-/* Safety: ensure any loader cursor/overlay is not fixed here */
-#loader, #loading-cursor { position: static !important; }
+/* Loader overlay uses its own fixed positioning (no override here) */
 
 /* --- Final safety reset: force normal flow (no sticky) --- */
 .about-section,
@@ -1045,20 +1044,20 @@ body.dark-mode .about-half-light {
 .about-section .row > [class^="col-"],
 .about-section .row > [class*=" col-"] { display: flex; height: auto; }
 .about-section .about-content { height: auto; display: flex; min-height: 0; overflow: visible; }
-.about-section .carousel-container { height: 100%; min-height: 60vh; }
+.about-section .carousel-container { height: 100%; min-height: clamp(280px, 45vh, 560px); }
 .about-section .carousel-track,
 .about-section .carousel-slide { height: 100%; }
 
 /* Prevent clipping on medium desktops and apply requested layout */
 @media (min-width: 992px) and (max-width: 1440px) {
   /* Let content dictate height and show overflow */
-  .about-section { min-height: auto; height: auto; overflow: visible; }
+  .about-section { min-height: auto; height: auto; overflow: visible; margin-top: 8rem; }
   .about-section .container-fluid { height: auto; }
   .about-section .row { min-height: auto; height: auto; overflow: visible; }
   .about-section .row > [class^="col-"],
   .about-section .row > [class*=" col-"] { height: auto; }
   .about-section .about-content { height: auto; overflow: visible; }
-  .about-section .carousel-container { height: auto; min-height: 56vh; }
+  .about-section .carousel-container { height: auto; min-height: clamp(260px, 38vh, 520px); }
   .about-section .carousel-track,
   .about-section .carousel-slide { height: auto; }
 

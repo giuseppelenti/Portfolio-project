@@ -191,33 +191,49 @@ document.addEventListener('DOMContentLoaded', function() {
     // cleaned: removed unused page detection
 
     // ==============================
-    // Loader behavior (moved from inline script)
+    // Loader: timed progress to 100% then fade out
     // ==============================
     (function initLoader(){
         const body = document.body;
         const loader = document.getElementById('loader');
         const loadingCursor = document.getElementById('loading-cursor');
-        try { body.classList.remove('loading'); } catch(_) {}
-        document.addEventListener('mousemove', function(e) {
-            if(!loadingCursor) return;
-            if(body.classList.contains('loading')) {
-                loadingCursor.style.left = (e.clientX + 10) + 'px';
-                loadingCursor.style.top = (e.clientY + 10) + 'px';
-            }
-        });
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                if (loader) loader.classList.add('loader-bottom');
+        const progressEl = document.getElementById('loading-progress');
+        if (!loader) return;
+
+        // Enter loading state: hide system cursor
+        body.classList.add('loading');
+
+        // Move the "Loading" label with the mouse only while loading
+        const onMove = (e) => {
+            if (!body.classList.contains('loading') || !loadingCursor) return;
+            loadingCursor.style.left = (e.clientX + 10) + 'px';
+            loadingCursor.style.top = (e.clientY + 10) + 'px';
+        };
+        document.addEventListener('mousemove', onMove);
+
+        // Simulate a smooth progress to 100%
+        const DURATION_MS = 2400; // totale durata caricamento
+        let start = performance.now();
+        const tick = (now) => {
+            const t = Math.min(1, (now - start) / DURATION_MS);
+            const eased = t < 0.8 ? (1 - Math.pow(1 - t / 0.8, 2)) * 0.95 : 0.95 + (t - 0.8) / 0.2 * 0.05;
+            const pct = Math.round(eased * 100);
+            if (progressEl) progressEl.textContent = pct + '%';
+            if (t < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                // ensure 100%
+                if (progressEl) progressEl.textContent = '100%';
+                // Exit loading
                 body.classList.remove('loading');
-            }, 400);
-        });
-        // Safety fallback
-        setTimeout(function() {
-            body.classList.remove('loading');
-            if (loader && !loader.classList.contains('loader-bottom')) {
-                loader.classList.add('loader-bottom');
+                loader.classList.add('is-hidden');
+                // cleanup mousemove after fade
+                setTimeout(() => {
+                    document.removeEventListener('mousemove', onMove);
+                }, 450);
             }
-        }, 800); 
+        };
+        requestAnimationFrame(tick);
     })();
 
     // ==============================
@@ -242,20 +258,39 @@ document.addEventListener('DOMContentLoaded', function() {
         typeWriter(firstName, "Giuseppe", 80);
         setTimeout(() => typeWriter(lastName, "Lenti", 80), 900);
     })();
-    // Dark mode: force always-on and disable toggle
-    const toggleBtn = document.getElementById('darkModeToggle');
-    const darkModeIcon = document.getElementById('darkModeIcon');
-    const enforceDarkMode = () => {
-        document.body.classList.add('dark-mode');
-        if (darkModeIcon) darkModeIcon.innerHTML = '<i class="fa fa-sun"></i>';
-        if (toggleBtn) {
-            try { toggleBtn.setAttribute('aria-hidden', 'true'); } catch(_) {}
-            try { toggleBtn.setAttribute('tabindex', '-1'); } catch(_) {}
-            try { toggleBtn.disabled = true; } catch(_) {}
-            try { toggleBtn.style.display = 'none'; } catch(_) {}
-        }
-    };
-    enforceDarkMode();
+
+    // Hero subtitle: interactive role cycler
+    (function heroSubtitleInteractive(){
+        const sub = document.querySelector('.subtitle.interactive');
+        if (!sub) return;
+        const roles = [
+            'UX / UI Designer',
+            'Web Designer',
+            'Product Designer'
+        ];
+        let idx = 0;
+        // Accessibility
+        sub.setAttribute('role', 'button');
+        sub.setAttribute('tabindex', '0');
+        sub.setAttribute('aria-live', 'polite');
+        const swap = () => {
+            idx = (idx + 1) % roles.length;
+            // fade out then in
+            sub.style.opacity = '0';
+            setTimeout(() => {
+                sub.textContent = roles[idx];
+                sub.style.opacity = '1';
+            }, 180);
+        };
+        sub.addEventListener('click', swap);
+        sub.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                swap();
+            }
+        });
+    })();
+    // Dark mode: permanently enabled via body class in HTML; no toggle needed
 
     // ==============================
     // Projects scroller: touch drag-to-scroll fallback (mobile)
@@ -590,46 +625,23 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburgerMenu.setAttribute('aria-label', 'Toggle navigation');
         hamburgerMenu.setAttribute('aria-expanded', 'false');
     }
-    // Control hamburger visibility: only show after exiting hero (or if open)
-    // Add hysteresis around hero bottom to avoid flicker near the boundary
-    let lastVisible = false;
-    const isPastHero = () => {
-        if (!heroSection) return window.scrollY > 60;
-        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-        // Use a 60px band to prevent rapid toggling
-        const lower = heroBottom - 60;
-        const upper = heroBottom + 60;
-        const y = window.scrollY;
-        if (lastVisible) {
-            // once visible, only hide when clearly above the lower band
-            return y > lower;
-        } else {
-            // once hidden, only show when clearly past the upper band
-            return y > upper;
-        }
-    };
+    // Visibility logic: always visible on mobile/tablet; on desktop show only after leaving hero
     const applyHamburgerVisibility = () => {
         if (!hamburgerMenu) return;
-        const forceVisible = hamburgerMenu.classList.contains('open');
-        const shouldShow = forceVisible || isPastHero();
-        if (shouldShow !== lastVisible) {
-            lastVisible = shouldShow;
-            hamburgerMenu.classList.toggle('visible', shouldShow);
+        const isDesktop = window.innerWidth >= 992;
+        if (!isDesktop) {
+            hamburgerMenu.classList.add('visible');
+            return;
         }
+        // desktop: show only past hero (with small hysteresis)
+        const heroBottom = heroSection ? (heroSection.offsetTop + heroSection.offsetHeight) : 0;
+        const y = window.scrollY;
+        const show = y > (heroBottom + 40) || hamburgerMenu.classList.contains('open');
+        hamburgerMenu.classList.toggle('visible', show);
     };
-    // Debounce scroll handler to reduce layout thrashing
-    let hvRaf = 0;
-    const updateHamburgerVisibility = () => {
-        if (hvRaf) return;
-        hvRaf = requestAnimationFrame(() => {
-            hvRaf = 0;
-            applyHamburgerVisibility();
-        });
-    };
-    // init + listeners
     applyHamburgerVisibility();
-    window.addEventListener('scroll', updateHamburgerVisibility, { passive: true });
-    window.addEventListener('resize', updateHamburgerVisibility);
+    window.addEventListener('scroll', applyHamburgerVisibility, { passive: true });
+    window.addEventListener('resize', applyHamburgerVisibility);
 
     if (hamburgerMenu && mainNav) {
         const toggleHamburger = () => {
@@ -639,7 +651,6 @@ document.addEventListener('DOMContentLoaded', function() {
             hamburgerMenu.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             // Debug: visual trace
             console.debug('[hamburger] toggled ->', { isOpen });
-            updateHamburgerVisibility();
         };
 
         // Touch guard to avoid double toggle (touchstart + click)
@@ -667,7 +678,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!mainNav.contains(e.target) && !hamburgerMenu.contains(e.target)) {
                 mainNav.classList.remove('open');
                 hamburgerMenu.classList.remove('open');
-                updateHamburgerVisibility();
                 hamburgerMenu.setAttribute('aria-expanded', 'false');
             }
         });
@@ -677,7 +687,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', () => {
                 mainNav.classList.remove('open');
                 hamburgerMenu.classList.remove('open');
-                updateHamburgerVisibility();
                 hamburgerMenu.setAttribute('aria-expanded', 'false');
             });
         });
