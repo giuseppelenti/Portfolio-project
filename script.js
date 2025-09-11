@@ -257,6 +257,57 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     enforceDarkMode();
 
+    // ==============================
+    // Projects scroller: touch drag-to-scroll fallback (mobile)
+    // ==============================
+    (function enableProjectsDragScroll(){
+        const scroller = document.querySelector('.projects-scroller');
+        if (!scroller) return;
+        // Only enable on touch/coarse pointers
+        let isCoarse = false;
+        try { isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches; } catch(_) { isCoarse = true; }
+        if (!isCoarse) return;
+
+        let isDown = false;
+        let startX = 0;
+        let startScroll = 0;
+        let dragged = false;
+
+        const onPointerDown = (e) => {
+            if (e.pointerType === 'mouse') return; // mouse can scroll with wheel/trackpad
+            isDown = true;
+            dragged = false;
+            startX = e.clientX;
+            startScroll = scroller.scrollLeft;
+            try { scroller.setPointerCapture(e.pointerId); } catch(_) {}
+        };
+        const onPointerMove = (e) => {
+            if (!isDown) return;
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) > 3) dragged = true;
+            scroller.scrollLeft = startScroll - dx;
+            // prevent page vertical scroll from hijacking the gesture while dragging horizontally
+            e.preventDefault();
+        };
+        const onPointerUp = (e) => {
+            isDown = false;
+            try { scroller.releasePointerCapture(e.pointerId); } catch(_) {}
+        };
+        scroller.addEventListener('pointerdown', onPointerDown, { passive: true });
+        scroller.addEventListener('pointermove', onPointerMove, { passive: false });
+        scroller.addEventListener('pointerup', onPointerUp, { passive: true });
+        scroller.addEventListener('pointercancel', onPointerUp, { passive: true });
+
+        // Prevent accidental clicks on links when the user dragged
+        scroller.addEventListener('click', (e) => {
+            if (dragged) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            dragged = false;
+        }, true);
+    })();
+
 // Project Detail overlay logic
 (function() {
     // Feature toggle: disable opening project detail pages on click
