@@ -1045,6 +1045,18 @@ body.dark-mode .about-half-light {
 .about-section .carousel-track,
 .about-section .carousel-slide { height: 100%; }
 
+/* Tablet: make About carousel much lower in height */
+@media (min-width: 768px) and (max-width: 1200px) {
+  .about-section .carousel-container {
+    /* significantly lower than default 45vh to free vertical space */
+    min-height: clamp(160px, 26vh, 280px);
+    height: auto; /* let content follow min-height */
+  }
+  /* Ensure track/slides honor the reduced container height */
+  .about-section .carousel-track,
+  .about-section .carousel-slide { height: 100%; }
+}
+
 /* Prevent clipping on medium desktops and apply requested layout */
 @media (min-width: 992px) and (max-width: 1440px) {
   /* Let content dictate height and show overflow */
@@ -1062,7 +1074,7 @@ body.dark-mode .about-half-light {
   .about-section .row { display: flex !important; flex-direction: column !important; align-items: center !important; gap: clamp(16px, 3vh, 32px); }
 
   /* Make both columns full-width, with explicit ordering */
-  .about-section .row > .col-12.col-lg-6 { width: 100% !important; max-width: 1200px; }
+  .about-section .row > .col-12.col-lg-6 { width: 100% !important;}
   .about-section .row > .col-12.col-lg-6.order-1.order-lg-1 { order: 1 !important; }
   .about-section .row > .col-12.col-lg-6.order-2.order-lg-2 { order: 3 !important; }
 
@@ -1557,7 +1569,6 @@ body.dark-mode .about-stats.stats-variant-cartoon .stat-label { color: #cfcfcf; 
   /* extra breathing room on the text column */
   .about-section .col-12.col-lg-6.order-1.order-lg-1 { padding: 0 40px; }
   /* shift carousel a bit from the text */
-  .about-section .about-content { margin-left: 40px; }
 }
 @media (max-width: 576px) {
   .about-section .col-12.col-lg-6.order-1.order-lg-1 { padding-top: 24px; padding-bottom: 24px; }
@@ -1957,4 +1968,42 @@ body.dark-mode .main-nav {
   .about-section .carousel-container { height: auto !important; min-height: 56vh !important; }
   .about-section .carousel-track,
   .about-section .carousel-slide { height: auto !important; }
+}
+
+/* FINAL HEIGHT OVERRIDE: 768px–1440px make About carousel higher (more breathing room) */
+@media (min-width: 768px) and (max-width: 1440px) {
+  .about-section .carousel-container {
+    height: auto !important;
+    min-height: clamp(260px, 35vh, 520px) !important;
+  }
+  .about-section .carousel-track,
+  .about-section .carousel-slide { height: 100% !important; }
+}
+
+/* ULTIMATE OVERRIDE (wins all): ensure parents don't force tall heights and carousel stays short */
+@media (min-width: 768px) and (max-width: 1440px) {
+  /* neutralize any 100vh/min-height constraints up the chain */
+  #playground.about-section,
+  #playground.about-section .container-fluid,
+  #playground.about-section .row,
+  #playground.about-section .row > [class^="col-"],
+  #playground.about-section .row > [class*=" col-"],
+  #playground.about-section .about-content {
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  /* force carousel to be much lower */
+  #playground.about-section .about-content .carousel-container {
+    height: 35vh !important;
+    min-height: 240px !important;
+    max-height: 520px !important;
+  }
+  #playground.about-section .about-content .carousel-track,
+  #playground.about-section .about-content .carousel-slide,
+  #playground.about-section .about-content .carousel-slide img {
+    height: 100% !important;
+  }
 }
