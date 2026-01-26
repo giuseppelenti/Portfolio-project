@@ -18,6 +18,235 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="home dark-mode">
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+        <div class="bg-orb bg-orb-4"></div>
+        <div class="bg-particles">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+    <style>
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.55;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .bg-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(145,70,255,0.6) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        .bg-orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,224,199,0.5) 0%, transparent 70%);
+            top: 40%;
+            right: -80px;
+            animation-delay: -5s;
+            animation-duration: 25s;
+        }
+        .bg-orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255,107,53,0.4) 0%, transparent 70%);
+            bottom: -100px;
+            left: 30%;
+            animation-delay: -10s;
+            animation-duration: 22s;
+        }
+        .bg-orb-4 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(145,70,255,0.5) 0%, transparent 70%);
+            bottom: 20%;
+            right: 20%;
+            animation-delay: -15s;
+            animation-duration: 18s;
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -40px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.95); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+        .bg-particles {
+            position: absolute;
+            inset: 0;
+        }
+        .bg-particles span {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.42);
+            border-radius: 50%;
+            animation: floatParticle 15s linear infinite;
+        }
+        .bg-particles span:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 12s; }
+        .bg-particles span:nth-child(2) { left: 20%; top: 80%; animation-delay: -2s; animation-duration: 14s; }
+        .bg-particles span:nth-child(3) { left: 35%; top: 50%; animation-delay: -4s; animation-duration: 10s; }
+        .bg-particles span:nth-child(4) { left: 50%; top: 15%; animation-delay: -6s; animation-duration: 16s; }
+        .bg-particles span:nth-child(5) { left: 65%; top: 70%; animation-delay: -8s; animation-duration: 11s; }
+        .bg-particles span:nth-child(6) { left: 75%; top: 30%; animation-delay: -10s; animation-duration: 13s; }
+        .bg-particles span:nth-child(7) { left: 85%; top: 60%; animation-delay: -1s; animation-duration: 15s; }
+        .bg-particles span:nth-child(8) { left: 5%; top: 45%; animation-delay: -3s; animation-duration: 17s; }
+        .bg-particles span:nth-child(9) { left: 45%; top: 85%; animation-delay: -5s; animation-duration: 12s; }
+        .bg-particles span:nth-child(10) { left: 90%; top: 10%; animation-delay: -7s; animation-duration: 14s; }
+        .bg-particles span:nth-child(11) { left: 25%; top: 35%; animation-delay: -9s; animation-duration: 16s; }
+        .bg-particles span:nth-child(12) { left: 55%; top: 55%; animation-delay: -11s; animation-duration: 11s; }
+        .bg-particles span:nth-child(13) { left: 70%; top: 90%; animation-delay: -13s; animation-duration: 13s; }
+        .bg-particles span:nth-child(14) { left: 15%; top: 65%; animation-delay: -14s; animation-duration: 15s; }
+        .bg-particles span:nth-child(15) { left: 80%; top: 40%; animation-delay: -12s; animation-duration: 10s; }
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .bg-orb, .bg-particles span { animation: none !important; }
+        }
+        
+        /* Keep background animations visible but preserve readability */
+        body.dark-mode {
+            background: #0a0a0a;
+        }
+        .hero-section,
+        #projects,
+        #about,
+        #playground,
+        .info-section,
+        #contact {
+            background: rgba(10,10,10,0.44);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        @media (max-width: 768px) {
+            .hero-section,
+            #projects,
+            #about,
+            #playground,
+            .info-section,
+            #contact {
+                background: rgba(10,10,10,0.54);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+        }
+        /* Add subtle animated glow to sections */
+        .projects-section::before,
+        .about-section::before,
+        .playground-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(145,70,255,0.08) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: sectionGlow 8s ease-in-out infinite;
+            z-index: 0;
+        }
+        .projects-section,
+        .about-section,
+        .playground-section {
+            position: relative;
+            isolation: isolate;
+        }
+        .projects-section > *,
+        .about-section > *,
+        .playground-section > * {
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes sectionGlow {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        /* Fix 3D card animations clipping */
+        .projects-section {
+            overflow-x: clip !important;
+            overflow-y: visible !important;
+        }
+        .projects-scroller {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            padding-top: 40px !important;
+            padding-bottom: 40px !important;
+            margin-top: -20px;
+            margin-bottom: -20px;
+        }
+        @media (max-width: 768px) {
+            .projects-scroller {
+                padding-top: 24px !important;
+                padding-bottom: 24px !important;
+                margin-top: -12px;
+                margin-bottom: -12px;
+            }
+        }
+        .project-topic-block {
+            overflow: visible !important;
+            transition: z-index 0s;
+        }
+        .project-topic-block:hover {
+            z-index: 100 !important;
+        }
+        .project-topic-block .topic-media {
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        /* Projects navigation arrows */
+        .projects-nav {
+            display: flex;
+            gap: 12px;
+            margin-left: auto;
+            justify-content: flex-end;
+        }
+        .projects-nav-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+        .projects-nav-btn:hover {
+            background: rgba(145,70,255,0.3);
+            border-color: rgba(145,70,255,0.5);
+            transform: scale(1.1);
+        }
+        .projects-nav-btn:active {
+            transform: scale(0.95);
+        }
+        .projects-nav-btn svg {
+            stroke: currentColor;
+        }
+    </style>
     <a href="#mainContent" class="skip-link">Salta al contenuto</a>
     <!-- Social e contatti in alto a destra -->
     
@@ -106,72 +335,63 @@
                         <span class="about-half-dark" data-i18n="projects_title_left">Pro</span><span class="about-half-light" data-i18n="projects_title_right">jects</span>
                     </h1>
                     <p class="projects-subtitle" data-i18n="projects_subtitle">Hold and drag →</p>
+                    <div class="projects-nav">
+                        <button class="projects-nav-btn" id="projects-prev" aria-label="Progetto precedente">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button class="projects-nav-btn" id="projects-next" aria-label="Progetto successivo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="projects-scroller" aria-label="Projects scroller" role="region">
                     <!-- 8. Case study Twitch -->
-                    <div class="project-topic-block">
+                    <div class="project-topic-block" id="twitch-project" data-modal-target="#twitch-modal" style="cursor:pointer;">
                         <div class="topic-media">
                             <img src="./img/1.jpg" alt="Case study UX/UI - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
-                        </div>
-                        <div class="topic-info">
                             <a class="topic-download" href="./pdf/Twitch Redesign - UXUI Case Study.pdf" download data-i18n-attr-title="download_image" data-i18n-attr-aria-label="download_image" title="Scarica allegato" aria-label="Scarica allegato">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                             </a>
+                            <a class="topic-behance" href="https://www.behance.net/gallery/241427997/Twitch-Redesign-UXUI-Case-Study" target="_blank" rel="noopener noreferrer" title="Vedi su Behance" aria-label="Vedi su Behance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
+                            </a>
+                        </div>
+                        <div class="topic-info">
                             <h3 class="topic-title" data-i18n="topic_twitch_title">Twitch Redesign - UX/UI Case study</h3>
                             <p class="topic-meta" data-i18n="topic_twitch_meta">Case study completa del servizio di streaming Twitch</p>
                         </div>
                     </div>
 
                     <!-- 8. Case study Jojobrt -->
-                    <div class="project-topic-block">
+                    <div class="project-topic-block" id="jojobrt-project" data-modal-target="#jojobrt-modal" style="cursor:pointer;">
                         <div class="topic-media">
-                            <img src="./img/Discovery Definitivo.jpg" alt="Case study UX/UI - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
-                        </div>
-                        <div class="topic-info">
+                            <img src="./img/Hero.png" alt="Case study UX/UI - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
                             <a class="topic-download" href="./pdf/JojobRT_CaseStudy.pdf" download data-i18n-attr-title="download_image" data-i18n-attr-aria-label="download_image" title="Scarica allegato" aria-label="Scarica allegato">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                             </a>
-                            <h3 class="topic-title" data-i18n="topic_jojobrt_title">JojobRT Redesign - UX/UI Case study</h3>
+                            <a class="topic-behance" href="https://www.behance.net/giuseppelenti" target="_blank" rel="noopener noreferrer" title="Vedi su Behance" aria-label="Vedi su Behance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
+                            </a>
+                        </div>
+                        <div class="topic-info">
+                            <h3 class="topic-title" data-i18n="topic_jojobrt_title">JojobRT - UX/UI Case study</h3>
                             <p class="topic-meta" data-i18n="topic_jojobrt_meta">Case study completa del servizio di carpooling JojobRT</p>
                         </div>
                     </div>
                     <!-- 5. Grafica (Brand Identity) -->
-                    <div class="project-topic-block">
+                    <div class="project-topic-block" id="grafica-project" data-modal-target="#grafica-modal" style="cursor:pointer;">
                         <div class="topic-media">
-                            <img src="./img/MeditActive_Redesign.png" alt="Grafica - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
-                        </div>
-                        <div class="topic-info">
+                            <img src="./img/MeditActive_BrandIdentity_page-0001.jpg" alt="Grafica - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
                             <a class="topic-download" href="./pdf/Progetto Grafica di Giuseppe Lenti.pdf" download="Grafica-brand-identity.jpg" data-i18n-attr-title="download_image" data-i18n-attr-aria-label="download_image" title="Scarica allegato" aria-label="Scarica allegato">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                             </a>
-                            <h3 class="topic-title" data-i18n="topic_graphics_title">Grafica</h3>
+                            <a class="topic-behance" href="https://www.behance.net/gallery/242938051/MeditActive-Rebranding-Project" target="_blank" rel="noopener noreferrer" title="Vedi su Behance" aria-label="Vedi su Behance">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
+                            </a>
+                        </div>
+                        <div class="topic-info">
+                            <h3 class="topic-title" data-i18n="topic_graphics_title">MeditActive Brand identity</h3>
                             <p class="topic-meta" data-i18n="topic_graphics_meta">Brand identity per app di meditazione</p>
-                        </div>
-                    </div>
-                    <!-- 6. HTML & CSS -->
-                    <div class="project-topic-block">
-                        <div class="topic-media">
-                            <img src="./img/Progetto HTML CSS.jpg" alt="HTML & CSS - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
-                        </div>
-                        <div class="topic-info">
-                            <a class="topic-download" href="./img/Progetto HTML CSS.jpg" download="HTML-CSS-personal-site.jpg" data-i18n-attr-title="download_image" data-i18n-attr-aria-label="download_image" title="Scarica allegato" aria-label="Scarica allegato">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                            </a>
-                            <h3 class="topic-title" data-i18n="topic_htmlcss_title">HTML &amp; CSS</h3>
-                            <p class="topic-meta" data-i18n="topic_htmlcss_meta">Sviluppo di un sito web personale con HTML e CSS</p>
-                        </div>
-                    </div>
-                    <!-- 7. Copywriting -->
-                    <div class="project-topic-block">
-                        <div class="topic-media">
-                            <img src="./img/Grey minimalist business project presentation .jpg" alt="Copywriting - anteprima" class="topic-image" loading="lazy" decoding="async" fetchpriority="low" />
-                        </div>
-                        <div class="topic-info">
-                            <a class="topic-download" href="./img/copywriting.jpg" download="Copywriting-articolo.jpg" data-i18n-attr-title="download_image" data-i18n-attr-aria-label="download_image" title="Scarica allegato" aria-label="Scarica allegato">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                            </a>
-                            <h3 class="topic-title" data-i18n="topic_copywriting_title">Copywriting</h3>
-                            <p class="topic-meta" data-i18n="topic_copywriting_meta">Stesura di un articolo, sviluppo del tema e persona di riferimento, analisi del target</p>
                         </div>
                     </div>
                 </div>
@@ -340,8 +560,178 @@
                     </a>
                 </div>
             </section>
+
+            <!-- Section 1: Overview -->
+            <section class="detail-slide split cs-overview" aria-label="Overview">
+                <div class="split-left">
+                    <h3 class="hero-headline">Lorem Project</h3>
+                    <p class="hero-kicker">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae ligula non tortor volutpat ultricies.</p>
+                    <p class="meta-inline"><span>Ruolo: UX/UI</span><span>Durata: 4 sett.</span><span>Team: Solo</span></p>
+                </div>
+                <div class="split-right">
+                    <img src="./img/1.jpg" alt="Overview del progetto" loading="lazy" decoding="async" />
+                </div>
+            </section>
+
+            <!-- Section 2: Ricerca & Insight -->
+            <section class="detail-slide cs-research" aria-label="Ricerca & Insight">
+                <div class="case-wrap">
+                    <h3 class="case-title">Ricerca & Insight</h3>
+                    <p class="case-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras fringilla, nibh non pretium maximus, arcu lorem pharetra diam, at ultrices risus ante sed lorem.</p>
+                    <div class="gallery">
+                        <figure>
+                            <img src="./img/Discovery Definitivo.jpg" alt="Sintesi ricerca" loading="lazy" decoding="async" />
+                            <figcaption>Lorem ipsum dolor sit amet</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="./img/Progetto HTML CSS.jpg" alt="User flow" loading="lazy" decoding="async" />
+                            <figcaption>Integer vitae ligula</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Soluzioni di Design -->
+            <section class="detail-slide cs-design" aria-label="Soluzioni di Design">
+                <div class="case-wrap">
+                    <h3 class="case-title">Soluzioni di Design</h3>
+                    <p class="case-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus posuere massa et eros mattis, a finibus lorem luctus.</p>
+                    <ul class="steps">
+                        <li><div class="step-title">Wireframe</div><p class="step-desc">Lorem ipsum dolor sit amet, consectetur.</p></li>
+                        <li><div class="step-title">UI</div><p class="step-desc">Suspendisse potenti. Curabitur dignissim varius.</p></li>
+                        <li><div class="step-title">Prototype</div><p class="step-desc">Donec a nunc vitae augue tristique efficitur.</p></li>
+                    </ul>
+                    <div class="gallery">
+                        <figure>
+                            <img src="./img/MeditActive_BrandIdentity_page-0001" alt="Componenti UI" loading="lazy" decoding="async" />
+                            <figcaption>Componenti UI</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="./img/1.jpg" alt="Schermata UI" loading="lazy" decoding="async" />
+                            <figcaption>Schermata UI</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Risultati -->
+            <section class="detail-slide cs-outcomes" aria-label="Risultati">
+                <div class="case-wrap">
+                    <h3 class="case-title">Risultati</h3>
+                    <p class="case-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a neque id arcu accumsan iaculis. Proin congue, ipsum ac feugiat dapibus, lorem nisl facilisis justo.</p>
+                    <ul class="kpi-cards">
+                        <li><strong>+28%</strong> <span>Task success</span></li>
+                        <li><strong>-34%</strong> <span>Tempo medio su task</span></li>
+                        <li><strong>+18</strong> <span>NPS</span></li>
+                    </ul>
+                    <div class="gallery">
+                        <figure>
+                            <img src="./img/Progetto HTML CSS.jpg" alt="Mockup finale" loading="lazy" decoding="async" />
+                            <figcaption>Schermata finale</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="./img/Discovery Definitivo.jpg" alt="Dettaglio interazione" loading="lazy" decoding="async" />
+                            <figcaption>Dettaglio interazione</figcaption>
+                        </figure>
+                    </div>
+                    <div class="cta-row">
+                        <a class="btn-cta" href="pdf/Progetto_DiscoveryUX_Giuseppe_Lenti.pdf" download>
+                            <span>Scarica il Case Study completo</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
         </div>
     </section>
+
+    <div id="twitch-modal" class="project-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <button class="project-modal-close" aria-label="Chiudi">&times;</button>
+        <div class="project-modal-content">
+            <img src="./img/Template.png" alt="Twitch Case Study" class="project-modal-img">
+        </div>
+    </div>
+
+    <div id="jojobrt-modal" class="project-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <button class="project-modal-close" aria-label="Chiudi">&times;</button>
+        <div class="project-modal-content">
+            <img src="./img/Template_jojob.png" alt="JojobRT Case Study" class="project-modal-img">
+        </div>
+    </div>
+
+    <div id="grafica-modal" class="project-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <button class="project-modal-close" aria-label="Chiudi">&times;</button>
+        <div class="project-modal-content">
+            <img src="./img/Template_meditactive.png" alt="Grafica Case Study" class="project-modal-img">
+        </div>
+    </div>
+
+    <style>
+        .project-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            overflow-y: auto;
+            padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+        }
+        .project-modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .project-modal-close {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            z-index: 100000;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            font-size: 2.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .project-modal-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        .project-modal-content {
+            max-width: 1400px;
+            width: min(95vw, 1400px);
+            margin: 0 auto;
+        }
+        .project-modal-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .project-modal {
+                padding: calc(12px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+            }
+            .project-modal-close {
+                width: 44px;
+                height: 44px;
+                font-size: 2.1rem;
+            }
+            .project-modal-img {
+                border-radius: 10px;
+            }
+        }
+    </style>
     
     <!-- Language toggle button -->
     <button data-i18n-attr-title="lang_toggle_title" title="Switch language" type="button" id="langToggle" class="btn-rect"><span id="langToggleLabel" data-i18n="lang_toggle_label">EN</span></button>
@@ -377,5 +767,70 @@
     <script src="script.js"></script>
     <!-- Bootstrap JS e dipendenze -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (function(){
+        var modals = Array.prototype.slice.call(document.querySelectorAll('.project-modal'));
+        var cards = Array.prototype.slice.call(document.querySelectorAll('.project-topic-block[data-modal-target]'));
+
+        var openModal = function(modal){
+          if (!modal) return;
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        };
+
+        var closeModal = function(modal){
+          if (!modal) return;
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        };
+
+        cards.forEach(function(card){
+          card.addEventListener('click', function(e){
+            var a = e.target.closest && e.target.closest('a');
+            if (a && (a.classList.contains('topic-download') || a.classList.contains('topic-behance'))) return;
+            var sel = card.getAttribute('data-modal-target');
+            var modal = sel ? document.querySelector(sel) : null;
+            e.preventDefault();
+            e.stopPropagation();
+            openModal(modal);
+          });
+        });
+
+        modals.forEach(function(modal){
+          var closeBtn = modal.querySelector('.project-modal-close');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', function(){ closeModal(modal); });
+          }
+          modal.addEventListener('click', function(e){
+            if (e.target === modal) closeModal(modal);
+          });
+        });
+
+        document.addEventListener('keydown', function(e){
+          if (e.key !== 'Escape') return;
+          var opened = document.querySelector('.project-modal.is-open');
+          if (opened) closeModal(opened);
+        });
+
+        // Projects carousel navigation
+        var scroller = document.querySelector('.projects-scroller');
+        var prevBtn = document.getElementById('projects-prev');
+        var nextBtn = document.getElementById('projects-next');
+        
+        if (scroller && prevBtn && nextBtn) {
+          var scrollAmount = 350; // pixels to scroll
+          
+          prevBtn.addEventListener('click', function() {
+            scroller.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          });
+          
+          nextBtn.addEventListener('click', function() {
+            scroller.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          });
+        }
+      })();
+    </script>
 </body>
 </html>

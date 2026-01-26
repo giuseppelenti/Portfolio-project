@@ -354,6 +354,7 @@ button:focus-visible,
 .nav-item:focus-visible,
 .project-topic-block:focus-visible,
 .topic-download:focus-visible,
+.topic-behance:focus-visible,
 .primary-cta:focus-visible {
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
@@ -590,6 +591,7 @@ button:focus:not(:focus-visible),
 .nav-item:focus:not(:focus-visible),
 .project-topic-block:focus:not(:focus-visible),
 .topic-download:focus:not(:focus-visible),
+.topic-behance:focus:not(:focus-visible),
 .primary-cta:focus:not(:focus-visible) {
   outline: none;
 }
@@ -598,7 +600,7 @@ button:focus:not(:focus-visible),
 .nav-item,
 .btn-cta,
 .topic-download,
-.primary-cta {
+.topic-behance {
   min-height: 44px;
   min-width: 44px;
 }
@@ -700,6 +702,33 @@ html { scroll-behavior: smooth; }
   overflow-x: clip; /* prevent section content from creating page-wide scroll */
 }
 
+/* Projects header (title + arrows) */
+.projects-header { gap: 16px; flex-wrap: wrap; }
+.projects-header .main-title { margin: 0; }
+.projects-nav { margin-left: auto; display: inline-flex; align-items: center; }
+/* Keep the hint readable and prevent awkward wraps */
+.projects-subtitle { margin: 0; opacity: 0.7; white-space: nowrap; }
+
+@media (max-width: 576px) {
+  .projects-header {
+    align-items: flex-end;
+  }
+  .projects-header .main-title {
+    flex: 1 0 100%;
+    order: 1;
+  }
+  .projects-subtitle {
+    flex: 1 0 100%;
+    order: 2;
+    text-align: right;
+  }
+  .projects-nav {
+    width: 100%;
+    order: 3;
+    justify-content: flex-end;
+  }
+}
+
 .projects-scroller {
   display: flex;
   flex-direction: row;
@@ -719,10 +748,10 @@ html { scroll-behavior: smooth; }
 .projects-scroller::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 6px; }
 .projects-scroller::-webkit-scrollbar-track { background: transparent; }
 
-/* Mobile: allow native swipe and hide helper text */
+/* Mobile: allow native swipe */
 @media (max-width: 768px) {
   .projects-scroller { touch-action: pan-x pinch-zoom; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
-  .projects-subtitle { display: none; }
+  .projects-subtitle { display: block; font-size: 0.85rem; }
 }
 
 /* Touch devices (regardless of width): enable horizontal pan */
@@ -755,6 +784,41 @@ html { scroll-behavior: smooth; }
 .project-topic-block .topic-info { padding: 10px 12px; }
 .project-topic-block .topic-title { margin: 6px 0 4px; font-size: 1.05rem; }
 .project-topic-block .topic-meta { margin: 0; opacity: 0.8; font-size: 0.95rem; }
+
+/* ==============================
+   Projects responsiveness
+   ============================== */
+@media (max-width: 992px) {
+  .projects-header { gap: 12px; }
+}
+
+@media (max-width: 768px) {
+  .projects-header { align-items: flex-end; }
+  .projects-nav { gap: 10px; }
+}
+
+@media (max-width: 576px) {
+  .projects-header { gap: 10px; }
+  .projects-nav { margin-left: auto; }
+
+  .project-topic-block {
+    width: min(86vw, 420px);
+  }
+  .project-topic-block .topic-media img {
+    height: clamp(200px, 56vw, 320px);
+  }
+  .project-topic-block .topic-info {
+    padding: 10px 12px;
+  }
+  .project-topic-block .topic-title {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+  .project-topic-block .topic-meta {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+}
 
 /* =========================================================
    Skills slider (scoped to Info section)
@@ -2528,6 +2592,10 @@ body.dark-mode .projects-scroller::-webkit-scrollbar-thumb { background: rgba(25
   overflow: hidden;
   background: #f6f6f6;
   border: 1px solid rgba(0,0,0,0.08);
+  --topic-action-inset: clamp(8px, 1.8vw, 12px);
+  /* keep consistent with 44px minimum touch target (see global min-width/min-height rule) */
+  --topic-action-size: max(44px, clamp(28px, 5.2vw, 40px));
+  --topic-action-gap: max(12px, clamp(12px, 2.4vw, 16px));
 }
 .project-topic-block .topic-media { position: relative; }
 .project-topic-block .topic-image {
@@ -2548,12 +2616,29 @@ body.dark-mode .projects-scroller::-webkit-scrollbar-thumb { background: rgba(25
   left: 16px;
   right: 16px;
   bottom: 14px;
-  /* extra right padding to avoid overlap with topic-download button (fluid) */
-  padding: 12px calc(clamp(28px, 5.2vw, 40px) + clamp(8px, 1.8vw, 12px) + 12px) 12px 14px;
+  /* extra right padding to avoid overlap with both topic-download and topic-behance buttons (fluid) */
+  padding: 12px calc((var(--topic-action-size) + var(--topic-action-gap)) * 2 + var(--topic-action-gap) + 12px) 12px 14px;
   border-radius: 12px;
   background: rgba(255,255,255,0.78);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+}
+
+@media (max-width: 768px) {
+  .project-topic-block .topic-info {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 12px 12px 14px;
+    border-radius: 0 0 16px 16px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  body.dark-mode .project-topic-block .topic-info {
+    background: rgba(20,20,20,0.90);
+  }
 }
 .topic-title { margin: 0; font-size: clamp(1.05rem, 2.2vw, 1.6rem); font-weight: 700; }
 .topic-meta { margin: 4px 0 0; font-size: clamp(0.8rem, 1.6vw, 0.95rem); color: #555; }
@@ -2561,38 +2646,81 @@ body.dark-mode .projects-scroller::-webkit-scrollbar-thumb { background: rgba(25
 /* Download button on project cards */
 .projects-scroller .project-topic-block .topic-download {
   position: absolute;
-  top: clamp(8px, 1.8vw, 12px);
-  right: clamp(8px, 1.8vw, 12px);
+  top: var(--topic-action-inset);
+  right: var(--topic-action-inset);
   z-index: 5;
-  width: clamp(28px, 5.2vw, 40px);
-  height: clamp(28px, 5.2vw, 40px);
+  width: var(--topic-action-size);
+  height: var(--topic-action-size);
   border-radius: 999px;
-  background: rgba(255,255,255,0.96);
-  border: 1px solid rgba(0,0,0,0.12);
-  color: #111;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.28);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28);
   transition: background .2s ease, color .2s ease, transform .2s ease;
 }
 .projects-scroller .project-topic-block .topic-download svg { width: 60%; height: 60%; }
 .projects-scroller .project-topic-block .topic-download:hover,
 .projects-scroller .project-topic-block .topic-download:focus-visible {
-  background: #111;
+  background: rgba(255,255,255,0.96);
+  color: #111;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Behance button on project cards */
+.projects-scroller .project-topic-block .topic-behance {
+  position: absolute;
+  top: var(--topic-action-inset);
+  right: calc(var(--topic-action-inset) + var(--topic-action-size) + var(--topic-action-gap));
+  z-index: 5;
+  width: var(--topic-action-size);
+  height: var(--topic-action-size);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.28);
   color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.projects-scroller .project-topic-block .topic-behance svg { width: 60%; height: 60%; }
+.projects-scroller .project-topic-block .topic-behance:hover,
+.projects-scroller .project-topic-block .topic-behance:focus-visible {
+  background: rgba(255,255,255,0.96);
+  color: #111;
   transform: translateY(-1px);
   outline: none;
 }
 body.dark-mode .projects-scroller .project-topic-block .topic-download {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.28);
   color: #fff;
 }
 body.dark-mode .projects-scroller .project-topic-block .topic-download:hover,
 body.dark-mode .projects-scroller .project-topic-block .topic-download:focus-visible {
-  background: #fff;
+  background: rgba(255,255,255,0.96);
+  color: #111;
+}
+
+body.dark-mode .projects-scroller .project-topic-block .topic-behance {
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.28);
+  color: #fff;
+}
+body.dark-mode .projects-scroller .project-topic-block .topic-behance:hover,
+body.dark-mode .projects-scroller .project-topic-block .topic-behance:focus-visible {
+  background: rgba(255,255,255,0.96);
   color: #111;
 }
 

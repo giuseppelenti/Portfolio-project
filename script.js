@@ -469,9 +469,22 @@ document.addEventListener('DOMContentLoaded', function() {
         scroller.addEventListener('pointerup', onPointerUp, { passive: true });
         scroller.addEventListener('pointercancel', onPointerUp, { passive: true });
 
-        // Prevent accidental clicks on links when the user dragged
+        // Prevent accidental clicks when dragging, but allow explicit card navigation
         scroller.addEventListener('click', (e) => {
             if (dragged) {
+                const card = e.target && e.target.closest ? e.target.closest('.project-topic-block') : null;
+                // If the card opens a standalone modal, do not hijack click
+                if (card && card.hasAttribute('data-modal-target')) {
+                    dragged = false;
+                    return;
+                }
+                const link = card ? card.getAttribute('data-detail-link') : null;
+                if (link) {
+                    // navigate to the dedicated project page even if there was a slight drag
+                    window.location.href = link;
+                    dragged = false;
+                    return;
+                }
                 e.stopPropagation();
                 e.preventDefault();
             }
@@ -482,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Project Detail overlay logic
 (function() {
     // Feature toggle: disable opening project detail pages on click
-    const ENABLE_PROJECT_DETAIL = false;
+    const ENABLE_PROJECT_DETAIL = true;
     if (!ENABLE_PROJECT_DETAIL) { return; }
     const detail = document.getElementById('project-detail');
     if (!detail) return;
@@ -613,7 +626,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Bind open handlers on project topic blocks
-    document.querySelectorAll('.projects-scroller .project-topic-block').forEach(card => {
+    // Exclude cards that open independent modals (they are handled in index.html via data-modal-target)
+    document.querySelectorAll('.projects-scroller .project-topic-block:not([data-modal-target])').forEach(card => {
         card.style.cursor = 'pointer';
         const gotoIfLinked = () => {
             const link = card.getAttribute('data-detail-link');
@@ -1211,6 +1225,41 @@ document.addEventListener('DOMContentLoaded', function() {
             } // else: let vertical wheel bubble to page unimpeded
         }, { passive: false });
     }
+
+    // ==============================
+    // Sidebar menu: active item controls preview visibility
+    // ==============================
+    (function sidebarMenuActive(){
+        try {
+            const container = document.querySelector('.sidebar-menu .sidebar-items');
+            if (!container) return;
+            const items = Array.from(container.querySelectorAll('.menu-item'));
+            const links = items.map(it => it.querySelector('.menu-link')).filter(Boolean);
+
+            const setActiveByLink = (link) => {
+                items.forEach(it => it.classList.remove('active'));
+                links.forEach(l => l.classList.remove('active'));
+                const it = link.closest('.menu-item');
+                if (it) it.classList.add('active');
+                link.classList.add('active');
+            };
+
+            const init = () => {
+                const hash = window.location.hash;
+                const match = links.find(l => l.getAttribute('href') === hash);
+                if (match) setActiveByLink(match);
+                else if (links[0]) setActiveByLink(links[0]);
+            };
+
+            init();
+            links.forEach(l => l.addEventListener('click', () => setActiveByLink(l)));
+            window.addEventListener('hashchange', () => {
+                const hash = window.location.hash;
+                const match = links.find(l => l.getAttribute('href') === hash);
+                if (match) setActiveByLink(match);
+            });
+        } catch (_) { /* no-op */ }
+    })();
 });
 
 // Sticky/parallax/IO observers removed per request: no movement or fades on sections
