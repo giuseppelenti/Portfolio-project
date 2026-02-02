@@ -699,6 +699,7 @@ html { scroll-behavior: smooth; }
    Projects scroller containment
    ========================================================= */
 .projects-section {
+  overflow-x: hidden; /* fallback for browsers that don't support overflow: clip */
   overflow-x: clip; /* prevent section content from creating page-wide scroll */
 }
 
@@ -1002,7 +1003,7 @@ body.dark-mode .info-section .skill img {
 /* =========================================================
    Project Detail overlay: vertically scrolling presentation
    ========================================================= */
-#project-detail { overflow-x: clip; }
+#project-detail { overflow-x: hidden; overflow-x: clip; }
 .project-detail-scroller {
   display: block; /* stack slides vertically */
   overflow-y: auto;
@@ -1227,7 +1228,7 @@ body.dark-mode .phase-nav a:hover { background: #fff; color: #111; border-color:
 /* =========================================================
    About carousel containment
    ========================================================= */
-.carousel-container { overflow-x: clip; touch-action: pan-y; }
+.carousel-container { overflow-x: hidden; overflow-x: clip; touch-action: pan-y; }
 .carousel-track { display: flex; gap: 16px; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
 .carousel-slide { flex: 0 0 auto; width: clamp(220px, 70vw, 560px); border-radius: 10px; overflow: hidden; }
 .carousel-slide img { display: block; width: 100%; height: auto; object-fit: cover; -webkit-user-drag: none; user-select: none; }
@@ -1334,10 +1335,10 @@ body {
 *, *::before, *::after { box-sizing: border-box; }
 
 /* Clip horizontal overflow from common wrappers (Bootstrap containers/rows) */
-.container-fluid { overflow-x: clip; }
-.main-content > section { overflow-x: clip; }
-.works-content { overflow-x: clip; }
-.footer, .footer-bottom { overflow-x: clip; }
+.container-fluid { overflow-x: hidden; overflow-x: clip; }
+.main-content > section { overflow-x: hidden; overflow-x: clip; }
+.works-content { overflow-x: hidden; overflow-x: clip; }
+.footer, .footer-bottom { overflow-x: hidden; overflow-x: clip; }
 
 .header,
 .main-content,
@@ -1466,6 +1467,7 @@ body {
   margin-top: 0;
   z-index: 3; /* keep above following content for clickability */
   box-sizing: border-box; /* include padding in width to avoid horizontal overflow */
+  overflow-x: hidden; /* fallback for browsers that don't support overflow: clip */
   overflow-x: clip; /* prevent sub-pixel overflow from inner content */
 }
 /* Prevent the overlaid hero-nav from blocking pointer events on sections below.
